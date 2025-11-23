@@ -14,3 +14,6 @@ The main structure of the project is as follows:
 ├── README.md
 ├── skull.gif
 └── styles.css
+
+
+CPTS-PROGRESS: 70
