@@ -1,44 +1,219 @@
-body {
-    margin: 0;
-    background: #0d0d0d;
-    color: #f5f5f5;
-    font-family: "Inter", sans-serif;
+:root {
+    --bg: #05060a;
+    --bg-alt: #0b0d13;
+    --accent: #8b5cf6;
+    --accent-soft: #4c1d95;
+    --text: #e5e7eb;
+    --text-muted: #9ca3af;
+    --card: #111827;
+    --border: #1f2937;
+    --radius-lg: 18px;
+    --radius-xl: 24px;
+    --shadow-soft: 0 18px 45px rgba(0, 0, 0, 0.55);
+    --font-main: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
 }
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background: radial-gradient(circle at top, #111827 0, #020617 55%);
+    color: var(--text);
+    font-family: var(--font-main);
+    line-height: 1.6;
+    min-height: 100vh;
+}
+
+/* HEADER */
+
+.site-header {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 8%;
+    background: rgba(2, 6, 23, 0.92);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+}
+
+.logo {
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: lowercase;
+    font-size: 1rem;
+    color: var(--text);
+}
+
+nav a {
+    margin-left: 20px;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: color 0.2s, transform 0.1s;
+}
+
+nav a:hover {
+    color: var(--text);
+    transform: translateY(-1px);
+}
+
+/* HERO */
 
 .hero {
-    height: 100vh;
+    max-width: 900px;
+    margin: 80px auto 40px;
+    padding: 32px 24px;
+    text-align: left;
+}
+
+.hero h1 {
+    font-size: clamp(2.3rem, 4vw, 3rem);
+    margin-bottom: 14px;
+}
+
+.hero p {
+    font-size: 1rem;
+    color: var(--text-muted);
+    max-width: 600px;
+}
+
+.hero-buttons {
+    margin-top: 24px;
     display: flex;
-    flex-direction: column;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.btn {
+    padding: 10px 20px;
+    border-radius: 999px;
+    border: 1px solid transparent;
+    background: linear-gradient(135deg, var(--accent), var(--accent-soft));
+    color: white;
+    font-size: 0.9rem;
+    text-decoration: none;
+    cursor: pointer;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
-    text-align: center;
+    transition: transform 0.08s ease-out, box-shadow 0.1s ease-out, filter 0.1s;
+    box-shadow: 0 12px 30px rgba(76, 29, 149, 0.6);
 }
 
-h1 {
-    font-size: 3rem;
-    margin: 0;
+.btn:hover {
+    transform: translateY(-1px);
+    filter: brightness(1.05);
 }
 
-p {
-    opacity: 0.8;
+.btn:active {
+    transform: translateY(0);
+    box-shadow: none;
 }
 
-.button {
-    margin-top: 20px;
-    padding: 10px 25px;
-    border: 1px solid #f5f5f5;
+.btn.btn-outline {
+    background: transparent;
+    border-color: rgba(148, 163, 184, 0.5);
+    color: var(--text);
+    box-shadow: none;
+}
+
+/* SECTIONS */
+
+.section {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 24px;
+}
+
+.section h2 {
+    font-size: 1.4rem;
+    margin-bottom: 10px;
+}
+
+.section p {
+    color: var(--text-muted);
+}
+
+/* CARDS */
+
+.cards {
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 18px;
+    margin-top: 16px;
+}
+
+.card {
+    background: radial-gradient(circle at top left, #1f2937 0, #020617 70%);
+    border-radius: var(--radius-lg);
+    padding: 16px 18px;
+    border: 1px solid rgba(148, 163, 184, 0.15);
+    box-shadow: var(--shadow-soft);
+}
+
+.card h3 {
+    font-size: 1rem;
+    margin-bottom: 6px;
+}
+
+/* LINKS LIST */
+
+.links-list {
+    list-style: none;
+    margin-top: 12px;
+}
+
+.links-list li + li {
+    margin-top: 6px;
+}
+
+.links-list a {
+    color: var(--accent);
     text-decoration: none;
-    color: white;
-    border-radius: 6px;
+    font-size: 0.95rem;
 }
 
-section {
-    padding: 60px 20px;
+.links-list a:hover {
+    text-decoration: underline;
 }
 
-footer {
+/* FOOTER */
+
+.site-footer {
+    border-top: 1px solid rgba(148, 163, 184, 0.15);
+    padding: 18px 8%;
+    margin-top: 40px;
     text-align: center;
-    padding: 20px;
-    opacity: 0.6;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 640px) {
+    .site-header {
+        padding-inline: 16px;
+    }
+
+    nav a {
+        margin-left: 12px;
+        font-size: 0.85rem;
+    }
+
+    .hero {
+        margin-top: 50px;
+        padding-inline: 16px;
+    }
+
+    .section {
+        padding-inline: 16px;
+    }
 }
 
