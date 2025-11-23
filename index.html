@@ -22,57 +22,84 @@
       </div>
     </header>
 
-    <section class="card now" id="now">
-      <h2>now</h2>
-      <p>pentesting, threat hunting and trying not to dodge the next cert.</p>
-    </section>
+    <div class="main-grid">
+      <div class="left-column">
+        <section class="card" id="certs">
+          <h2>certs</h2>
 
-    <section class="grid">
-      <article class="card">
-        <h3>track record</h3>
-        <p>
-          college (didn't learn much), 1 year as cyber/threat intern.<br>
-          time being a pentester: <span id="pentest-live"></span>
-        </p>
-      </article>
+          <div class="cert-item">
+            <div class="cert-logo"></div>
 
-      <article class="card">
-        <h3>what i poke</h3>
-        <p>web apps :^)</p>
-      </article>
+            <div class="cert-meta">
+              <span class="cert-name">CPTS</span>
+              <div class="cert-progress-row">
+                <div class="cert-progress-bar">
+                  <div class="cert-progress-fill"></div>
+                </div>
+                <span class="cert-progress-text" id="cert-progress-text">0%</span>
+              </div>
+            </div>
+          </div>
+        </section>
 
-      <article class="card">
-        <h3>this spot</h3>
-        <p>idk just a place to add somethings i like</p>
-      </article>
-    </section>
+        <section class="card" id="friends">
+          <h2>visit this others too</h2>
+          <ul class="link-list">
+            <li><a href="https://blog.i5nipe.com/" target="_blank" rel="noreferrer">i5nipe's blog</a></li>
+            <li><a href="http://hexkaster.com/" target="_blank" rel="noreferrer">hexkaster's blog</a></li>
+          </ul>
+        </section>
+      </div>
 
-    <section class="card" id="links">
-      <h2>links</h2>
-      <ul class="link-list">
-        <li><a href="https://github.com/coaglio" target="_blank" rel="noreferrer">github</a></li>
-        <li><a href="https://www.linkedin.com/in/guilherme-coaglio-832039286/" target="_blank" rel="noreferrer">linkedin</a></li>
-      </ul>
-    </section>
-    
-    <section class="card" id="friends">
-      <h2>btw visit this other too</h2>
-      <ul class="link-list">
-        <li><a href="https://blog.i5nipe.com/" target="_blank" rel="noreferrer">i5nipe's blog</a></li>
-        <li><a href="http://hexkaster.com/" target="_blank" rel="noreferrer">hexkaster's blog</a></li>
-      </ul>
-    </section>
+      <div class="right-column">
+        <section class="card now" id="now">
+          <h2>now</h2>
+          <p>pentesting, threat hunting and trying not to dodge the next cert.</p>
+        </section>
+
+        <section class="grid">
+          <article class="card">
+            <h3>track record</h3>
+            <p>
+              college (didn't learn much), 1 year as cyber/threat intern.<br>
+              time being a pentester: <span id="pentest-live"></span>
+            </p>
+          </article>
+
+          <article class="card">
+            <h3>what i poke</h3>
+            <p>web apps :^)</p>
+          </article>
+
+          <article class="card">
+            <h3>this spot</h3>
+            <p>idk just a place to add somethings i like</p>
+          </article>
+        </section>
+
+        <section class="card" id="links">
+          <h2>how to find me</h2>
+          <ul class="link-list">
+            <li><a href="https://github.com/coaglio" target="_blank" rel="noreferrer">github</a></li>
+            <li><a href="https://www.linkedin.com/in/guilherme-coaglio-832039286/" target="_blank" rel="noreferrer">linkedin</a></li>
+          </ul>
+        </section>
+      </div>
+    </div>
 
     <footer class="foot">
       <p>&copy; 2025 coaglio. All rights reserved.</p>
     </footer>
   </main>
 
-
-  <!-- LIVE TIMER -->
   <script>
+    const certProgress = 48;
+
+    document.documentElement.style.setProperty("--cert-progress", certProgress + "%");
+    document.getElementById("cert-progress-text").textContent = certProgress + "%";
+
     function updatePentestTimer() {
-      const start = new Date(2025, 3, 28); // abril = 3
+      const start = new Date(2025, 3, 28);
       const now = new Date();
 
       let years = now.getFullYear() - start.getFullYear();
@@ -127,98 +154,4 @@
 
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
