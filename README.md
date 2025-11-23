@@ -16,4 +16,4 @@ The main structure of the project is as follows:
 └── styles.css
 
 
-CPTS-PROGRESS: 70
+CPTS-PROGRESS: 2
