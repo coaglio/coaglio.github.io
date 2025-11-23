@@ -353,3 +353,96 @@ p {
   }
 }
 
+/* --- MOBILE RESPONSIVO  --- */
+@media (max-width: 420px) {
+  
+  .frame {
+    padding: 1.8rem 1rem 2.5rem;
+  }
+
+  .hero {
+    flex-direction: column;
+    gap: 1.2rem;
+    margin-bottom: 2.2rem;
+  }
+
+  .logo {
+    font-size: 1.35rem;
+    letter-spacing: 0.09em;
+  }
+
+  .tagline {
+    font-size: 0.85rem;
+    max-width: 20rem;
+  }
+
+  .skull {
+    width: 80px;
+    height: 80px;
+  }
+
+  .card {
+    padding: 1rem 1rem 1.1rem;
+  }
+
+  .card p {
+    font-size: 0.85rem;
+    line-height: 1.48;
+    word-break: break-word;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .link-list {
+    gap: 0.5rem 1rem;
+  }
+
+  .link-list a {
+    font-size: 0.85rem;
+  }
+
+  #pentest-live {
+    display: inline-block;
+    margin-top: 0.35rem;
+    font-size: 0.83rem;
+    word-break: break-all; /* evita estourar o card */
+  }
+
+  .foot {
+    font-size: 0.75rem;
+    gap: 0.3rem;
+  }
+}
+
+/* --- MOBILE PEQUENO (iPhone SE / Android mini) --- */
+@media (max-width: 340px) {
+
+  .logo {
+    font-size: 1.15rem;
+  }
+
+  .tagline {
+    font-size: 0.78rem;
+  }
+
+  .skull {
+    width: 70px;
+    height: 70px;
+  }
+
+  .card {
+    padding: 0.9rem 0.85rem 1rem;
+  }
+
+  .card p {
+    font-size: 0.8rem;
+  }
+
+  #pentest-live {
+    font-size: 0.78rem;
+  }
+
+}
