@@ -30,7 +30,10 @@
     <section class="grid">
       <article class="card">
         <h3>track record</h3>
-        <p>college (didn't learn much), 1 year as cyber/threat intern, 7 months breaking things as a pentester.</p>
+        <p>
+          college (didn't learn much), 1 year as cyber/threat intern.<br>
+          time being a pentester: <span id="pentest-live"></span>
+        </p>
       </article>
 
       <article class="card">
@@ -58,13 +61,164 @@
         <li><a href="https://blog.i5nipe.com/" target="_blank" rel="noreferrer">i5nipe's blog</a></li>
         <li><a href="http://hexkaster.com/" target="_blank" rel="noreferrer">hexkaster's blog</a></li>
       </ul>
-</section>
-
+    </section>
 
     <footer class="foot">
-      <span>no trackers. no ads. just signal.</span>
+      <p>&copy; 2025 coaglio. All rights reserved.</p>
     </footer>
   </main>
+
+
+  <!-- LIVE TIMER -->
+  <script>
+    function updatePentestTimer() {
+      const start = new Date(2025, 3, 28); // abril = 3
+      const now = new Date();
+
+      let years = now.getFullYear() - start.getFullYear();
+      let months = now.getMonth() - start.getMonth();
+      let days = now.getDate() - start.getDate();
+      let hours = now.getHours() - start.getHours();
+      let minutes = now.getMinutes() - start.getMinutes();
+      let seconds = now.getSeconds() - start.getSeconds();
+
+      if (seconds < 0) {
+        seconds += 60;
+        minutes--;
+      }
+
+      if (minutes < 0) {
+        minutes += 60;
+        hours--;
+      }
+
+      if (hours < 0) {
+        hours += 24;
+        days--;
+      }
+
+      if (days < 0) {
+        const prevMonth = new Date(now.getFullYear(), now.getMonth(), 0);
+        days += prevMonth.getDate();
+        months--;
+      }
+
+      if (months < 0) {
+        months += 12;
+        years--;
+      }
+
+      const format = (v) => (v < 10 ? "0" + v : v);
+
+      const display =
+        `${years}y ` +
+        `${months}m ` +
+        `${days}d ` +
+        `${format(hours)}h ` +
+        `${format(minutes)}m ` +
+        `${format(seconds)}s`;
+
+      document.getElementById("pentest-live").textContent = display;
+    }
+
+    updatePentestTimer();
+    setInterval(updatePentestTimer, 1000);
+  </script>
+
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
