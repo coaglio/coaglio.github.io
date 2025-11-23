@@ -1,15 +1,16 @@
 # coaglio site
 
-Repositório do site pessoal desenvolvido em HTML e CSS, com animações customizadas e foco em um design minimalista e responsivo.
+Personal website built with pure HTML and CSS, featuring custom animations, a dark aesthetic, and a fully responsive layout.
 
-Este projeto não utiliza frameworks ou temas externos. Toda a estrutura, layout e animações foram implementadas manualmente para garantir controle total sobre a estética e o comportamento visual.
+This project does not rely on any external frameworks or theme engines. All layout, styling, and motion effects were handcrafted to maintain full control over the visual identity and performance.
 
-A seguir, a estrutura principal do projeto:
+The main structure of the project is as follows:
 
-```shell
+```
+❯ tree        
 .
+├── CNAME
 ├── index.html
-├── styles.css
+├── README.md
 ├── skull.gif
-└── assets/
-
+└── styles.css
