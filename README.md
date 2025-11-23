@@ -7,9 +7,10 @@ This project does not rely on any external frameworks or theme engines. All layo
 The main structure of the project is as follows:
 
 ```
-❯ tree        
+❯ tree  
 .
 ├── CNAME
+├── cpts.png
 ├── index.html
 ├── README.md
 ├── skull.gif
