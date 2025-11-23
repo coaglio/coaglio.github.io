@@ -26,7 +26,7 @@ body {
   font-family: "Space Grotesk", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
-/* noise layer */
+/* grain layer */
 
 .grain {
   position: fixed;
@@ -59,58 +59,59 @@ body {
 .hero {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 1.5rem;
-  margin-bottom: 2.5rem;
+  justify-content: center;
+  gap: 1.8rem;
+  margin-bottom: 2.8rem;
+  text-align: center;
 }
 
 .brand {
   display: flex;
   flex-direction: column;
-  gap: 0.35rem;
+  gap: 0.5rem;
+  align-items: center;
 }
 
 .logo {
   font-family: "Press Start 2P", system-ui, monospace;
-  font-size: 1rem;
-  letter-spacing: 0.08em;
+  font-size: 1.8rem;
+  letter-spacing: 0.12em;
   text-transform: lowercase;
 }
 
 .tagline {
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   color: var(--muted);
-  max-width: 22rem;
+  max-width: 30rem;
 }
 
 .skull-wrap {
-  flex-shrink: 0;
-  padding: 0.25rem;
+  padding: 0.4rem;
   border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   background: radial-gradient(circle at 30% 0, #222232 0, #050509 55%);
   box-shadow:
-    0 0 0 1px rgba(255, 255, 255, 0.02),
-    0 0 24px rgba(0, 0, 0, 0.9);
+    0 0 0 1px rgba(255, 255, 255, 0.03),
+    0 0 32px rgba(0, 0, 0, 0.95);
 }
 
 .skull {
   display: block;
-  width: 82px;
-  height: 82px;
+  width: 120px;
+  height: 120px;
   object-fit: cover;
   border-radius: 999px;
   image-rendering: pixelated;
 }
 
 @media (max-width: 540px) {
-  .hero {
-    align-items: flex-start;
+  .logo {
+    font-size: 1.5rem;
   }
 
   .skull {
-    width: 64px;
-    height: 64px;
+    width: 96px;
+    height: 96px;
   }
 }
 
@@ -178,9 +179,13 @@ p {
   color: #d0d0dc;
 }
 
-/* links block */
+/* links blocks */
 
 #links {
+  margin-bottom: 1.7rem;
+}
+
+#friends {
   margin-bottom: 2rem;
 }
 
