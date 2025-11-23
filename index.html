@@ -1,107 +1,61 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>coaglio</title>
-    <link rel="stylesheet" href="styles.css" />
+  <meta charset="UTF-8">
+  <title>coaglio</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Press+Start+2P&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <header class="site-header">
-        <div class="container">
-            <h1 class="logo">coaglio<span>.</span></h1>
-            <nav class="nav">
-                <a href="#about">About</a>
-                <a href="#work">Work</a>
-                <a href="#links">Links</a>
-            </nav>
-        </div>
+  <div class="grain"></div>
+
+  <main class="frame">
+    <header class="hero">
+      <div class="brand">
+        <span class="logo">coaglio</span>
+        <span class="tagline">web apps, bad ideas, repeat.</span>
+      </div>
+
+      <div class="skull-wrap">
+        <img src="skull.gif" alt="skull animation" class="skull">
+      </div>
     </header>
 
-    <main>
-        <section class="hero">
-            <div class="container hero-inner">
-                <div class="hero-text">
-                    <p class="tagline">Security. Code. Experiments.</p>
-                    <h2>Hey, I'm Guilherme.</h2>
-                    <p class="subtitle">
-                        This is my small space on the internet for experiments,
-                        write-ups and ideas related to cybersecurity and offensive research.
-                    </p>
-                    <div class="hero-actions">
-                        <a href="#work" class="btn primary">See my work</a>
-                        <a href="#links" class="btn ghost">Find me online</a>
-                    </div>
-                </div>
+    <section class="card now" id="now">
+      <h2>now</h2>
+      <p>pentesting, threat hunting and trying not to dodge the next cert.</p>
+    </section>
 
-                <div class="hero-card">
-                    <h3>Current focus</h3>
-                    <ul>
-                        <li>CPTS path and offensive security</li>
-                        <li>Threat hunting and detection engineering</li>
-                        <li>Small tools and personal labs</li>
-                    </ul>
-                </div>
-            </div>
-        </section>
+    <section class="grid">
+      <article class="card">
+        <h3>track record</h3>
+        <p>college (didn't learn much), 1 year as cyber/threat intern, 7 months breaking things as a pentester.</p>
+      </article>
 
-        <section id="about" class="section">
-            <div class="container">
-                <h2>About</h2>
-                <p>
-                    I work with offensive security, threat hunting and OSINT.
-                    This website is a personal lab where I test layouts, ideas and projects.
-                </p>
-                <p>
-                    Eventually this will include write-ups, notes and tools.
-                </p>
-            </div>
-        </section>
+      <article class="card">
+        <h3>what i poke</h3>
+        <p>web apps, auth flows, stuff that cries when you fuzz it.</p>
+      </article>
 
-        <section id="work" class="section section-alt">
-            <div class="container">
-                <h2>Work</h2>
-                <div class="grid">
-                    <div class="card">
-                        <h3>Offensive Security</h3>
-                        <p>
-                            Web application assessments, network testing and Active Directory labs.
-                        </p>
-                    </div>
-                    <div class="card">
-                        <h3>Threat Hunting</h3>
-                        <p>
-                            Hunting for leaked data, exposed systems and abnormal activity.
-                        </p>
-                    </div>
-                    <div class="card">
-                        <h3>Side Projects</h3>
-                        <p>
-                            Experiments, tools and small ideas I work on in my spare time.
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </section>
+      <article class="card">
+        <h3>this spot</h3>
+        <p>no life story. just a small corner to drop notes, payloads and random chaos when i feel like it.</p>
+      </article>
+    </section>
 
-        <section id="links" class="section">
-            <div class="container">
-                <h2>Links</h2>
-                <ul class="links-list">
-                    <li><a href="https://github.com/coaglio" target="_blank">GitHub</a></li>
-                </ul>
-            </div>
-        </section>
-    </main>
+    <section class="card" id="links">
+      <h2>links</h2>
+      <ul class="link-list">
+        <li><a href="https://github.com/coaglio" target="_blank" rel="noreferrer">github</a></li>
+        <li><a href="https://www.linkedin.com/in/guilherme-coaglio-832039286/" target="_blank" rel="noreferrer">linkedin</a></li>
+      </ul>
+    </section>
 
-    <footer class="site-footer">
-        <div class="container footer-inner">
-            <p>© <span id="year"></span> coaglio</p>
-        </div>
-        <script>
-            document.getElementById("year").textContent = new Date().getFullYear();
-        </script>
+    <footer class="foot">
+      <span>no trackers. no ads. just signal.</span>
     </footer>
+  </main>
 </body>
 </html>
 
