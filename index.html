@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>coaglio</title>
+    <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+    <header class="site-header">
+        <div class="container">
+            <h1 class="logo">coaglio<span>.</span></h1>
+            <nav class="nav">
+                <a href="#about">About</a>
+                <a href="#work">Work</a>
+                <a href="#links">Links</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="container hero-inner">
+                <div class="hero-text">
+                    <p class="tagline">Security. Code. Experiments.</p>
+                    <h2>Hey, I'm Guilherme.</h2>
+                    <p class="subtitle">
+                        This is my small space on the internet for experiments,
+                        write-ups and ideas related to cybersecurity and offensive research.
+                    </p>
+                    <div class="hero-actions">
+                        <a href="#work" class="btn primary">See my work</a>
+                        <a href="#links" class="btn ghost">Find me online</a>
+                    </div>
+                </div>
+
+                <div class="hero-card">
+                    <h3>Current focus</h3>
+                    <ul>
+                        <li>CPTS path and offensive security</li>
+                        <li>Threat hunting and detection engineering</li>
+                        <li>Small tools and personal labs</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="about" class="section">
+            <div class="container">
+                <h2>About</h2>
+                <p>
+                    I work with offensive security, threat hunting and OSINT.
+                    This website is a personal lab where I test layouts, ideas and projects.
+                </p>
+                <p>
+                    Eventually this will include write-ups, notes and tools.
+                </p>
+            </div>
+        </section>
+
+        <section id="work" class="section section-alt">
+            <div class="container">
+                <h2>Work</h2>
+                <div class="grid">
+                    <div class="card">
+                        <h3>Offensive Security</h3>
+                        <p>
+                            Web application assessments, network testing and Active Directory labs.
+                        </p>
+                    </div>
+                    <div class="card">
+                        <h3>Threat Hunting</h3>
+                        <p>
+                            Hunting for leaked data, exposed systems and abnormal activity.
+                        </p>
+                    </div>
+                    <div class="card">
+                        <h3>Side Projects</h3>
+                        <p>
+                            Experiments, tools and small ideas I work on in my spare time.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="links" class="section">
+            <div class="container">
+                <h2>Links</h2>
+                <ul class="links-list">
+                    <li><a href="https://github.com/coaglio" target="_blank">GitHub</a></li>
+                </ul>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container footer-inner">
+            <p>© <span id="year"></span> coaglio</p>
+        </div>
+        <script>
+            document.getElementById("year").textContent = new Date().getFullYear();
+        </script>
+    </footer>
+</body>
+</html>
+
