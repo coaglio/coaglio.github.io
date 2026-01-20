@@ -11,7 +11,7 @@ The main structure of the project is as follows:
 ├── cpts.png
 ├── index.html
 ├── README.md
-├── skull.png
 ├── skull.gif
+├── skull.png
 └── styles.css
 ```
