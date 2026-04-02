@@ -59,6 +59,13 @@ body {
   max-width: 880px;
   margin: 0 auto;
   padding: 2.5rem 1.5rem 3rem;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.foot {
+  margin-top: auto;
 }
 
 @media (min-width: 768px) {
@@ -187,6 +194,9 @@ body {
   gap: 1.8rem;
   margin-bottom: 2.8rem;
   text-align: center;
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .brand {
@@ -194,7 +204,10 @@ body {
   flex-direction: column;
   align-items: center;
   gap: 0.45rem;
+  width: 260px;
+  flex-shrink: 0;
 }
+
 
 .logo {
   font-family: "Press Start 2P", system-ui, monospace;
@@ -219,6 +232,7 @@ body {
 }
 
 .skull-wrap {
+  flex-shrink: 0;
   padding: 0.4rem;
   border-radius: 999px;
   border: 1px solid rgba(255, 255, 255, 0.08);
