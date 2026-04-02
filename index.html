@@ -16,10 +16,27 @@
     <div class="grain"></div>
 
     <main class="frame">
+        <nav class="site-nav">
+            <a href="./" class="nav-logo">coaglio</a>
+            <div class="nav-right">
+                <div class="nav-links">
+                    <a href="./" class="active" data-i18n="nav-home">home</a>
+                    <a href="./writeups/" data-i18n="nav-writeups">writeups</a>
+                    <a href="./htb/" data-i18n="nav-htb">htb</a>
+                </div>
+                <div class="lang-switcher">
+                    <button class="lang-btn active" data-lang="en" onclick="setLang('en')">EN</button>
+                    <button class="lang-btn" data-lang="pt" onclick="setLang('pt')">PT</button>
+                    <button class="lang-btn" data-lang="es" onclick="setLang('es')">ES</button>
+                </div>
+            </div>
+        </nav>
+
         <header class="hero">
             <div class="brand">
                 <span class="logo">coaglio</span>
-                <span class="tagline">cybersec enthusiast.</span>
+                <span class="tagline" data-i18n="tagline">cybersec enthusiast.</span>
+                <span class="site-desc" data-i18n="site-desc">just a place to put things i like.</span>
             </div>
 
             <div class="skull-wrap">
@@ -27,10 +44,10 @@
             </div>
         </header>
 
-        <div class="main-grid" style="margin-bottom: 50px;">
+        <div class="main-grid">
             <div class="left-column">
                 <section class="card" id="certs">
-                    <h2>certs</h2>
+                    <h2 data-i18n="certs">certs</h2>
 
                     <div class="cert-item">
                         <div class="cert-logo"></div>
@@ -43,13 +60,13 @@
                                 </div>
                                 <span class="cert-progress-text" id="cert-progress-text">0%</span>
                             </div>
+                            <span class="cert-status" data-i18n="certified">certified</span>
                         </div>
                     </div>
                 </section>
 
-
                 <section class="card" id="links">
-                    <h2>how to find me</h2>
+                    <h2 data-i18n="how-to-find">how to find me</h2>
                     <ul class="link-list">
                         <li><a href="https://github.com/coaglio" target="_blank" rel="noreferrer">github</a></li>
                         <li><a href="https://www.linkedin.com/in/guilherme-coaglio-832039286/" target="_blank"
@@ -58,7 +75,7 @@
                 </section>
 
                 <section class="card" id="friends">
-                    <h2>visit this others too</h2>
+                    <h2 data-i18n="friends">visit these others too</h2>
                     <ul class="link-list">
                         <li> - <a href="https://blog.i5nipe.com/" target="_blank" rel="noreferrer">i5nipe's blog</a></li>
                         <li> - <a href="https://hexkaster.com/" target="_blank" rel="noreferrer">hexkaster's blog</a></li>
@@ -69,205 +86,36 @@
 
             <div class="right-column">
                 <section class="card now" id="now">
-                    <h2>now</h2>
-                    <p>pentesting and trying not to procrastinate.</p>
+                    <h2 data-i18n="now">now</h2>
+                    <p data-i18n="now-text">pentesting and trying not to procrastinate.</p>
                 </section>
 
                 <section class="grid">
                     <article class="card">
-                        <h3>track record</h3>
+                        <h3 data-i18n="track-record">track record</h3>
                         <p>
-                            college (didn't learn much), 1 year as cyber/threat intern.<br>
-                            time being a pentester: <span id="pentest-live"></span>
+                            <span data-i18n="track-record-text">college (didn't learn much), 1 year as cyber/threat intern.</span><br>
+                            <span data-i18n="pentest-label">time being a pentester: </span><span id="pentest-live"></span>
                         </p>
                     </article>
 
                     <article class="card">
-                        <h3>what i poke</h3>
-                        <p>web apps :^)</p>
-                    </article>
-
-                    <article class="card">
-                        <h3>this spot</h3>
-                        <p>idk just a place to add somethings i like</p>
+                        <h3 data-i18n="what-i-poke">what i poke</h3>
+                        <p data-i18n="what-i-poke-text">web apps :^)</p>
                     </article>
                 </section>
            </div>
         </div>
-        <section class="card" id="htb-badges">
-            <h2>htb badges</h2>
 
-            <div class="badges-container">
-                <div class="badge-card">
-                    <img src="https://academy.hackthebox.com/storage/badges/academician.png" alt="Enumerating & Attacking Active Directory badge">
-                    <span>Introduction to Academy</span>
-                </div>
-
-                <div class="badge-card">
-                    <img src="https://academy.hackthebox.com/storage/badges/the-eye-that-sees-all.png" alt="Web Fundamentals badge">
-                    <span>Network Enumeration with Nmap</span>
-                </div>
-
-                <div class="badge-card">
-                    <img src="https://academy.hackthebox.com/storage/badges/airborne-delivery.png" alt="Network Enumeration badge">
-                    <span>File Transfers</span>
-                </div>
-
-                <div class="badge-card">
-                    <img src="https://academy.hackthebox.com/storage/badges/combine-the-modules.png" alt="Network Enumeration badge">
-                    <span>Using Metasploit</span>
-                </div>
-
-                <div class="badge-card">
-                    <img src="https://academy.hackthebox.com/storage/badges/fuzzing-is-power.png" alt="Network Enumeration badge">
-                    <span>Fuzzing with Ffuf</span>
-                </div>
-
-                <div class="badge-card">
-                    <img src="https://academy.hackthebox.com/storage/badges/crude-but-effective.png" alt="Network Enumeration badge">
-                    <span>Login Brute Forcing</span>
-                </div>
-
-                <div class="badge-card">
-                    <img src="https://academy.hackthebox.com/storage/badges/your-first-battle.png" alt="Network Enumeration badge">
-                    <span>Getting Started</span>
-                </div>
-
-                <div class="badge-card">
-                    <img src="https://academy.hackthebox.com/storage/badges/tactical.png" alt="Network Enumeration badge">
-                    <span>Penetration Testing Process</span>
-                </div>
-
-                <div class="badge-card">
-                    <img src="https://academy.hackthebox.com/storage/badges/light-in-the-dark.png" alt="Network Enumeration badge">
-                    <span>Vulnerability Assessment</span>
-                </div>
-
-                <div class="badge-card">
-                    <img src="https://academy.hackthebox.com/storage/badges/dive-into-requests.png" alt="Network Enumeration badge">
-                    <span>Using Web Proxies</span>
-                </div>
-
-                <div class="badge-card">
-                    <img src="https://academy.hackthebox.com/storage/badges/you-need-to-trace-before-you-can-hung.png" alt="Network Enumeration badge">
-                    <span>Footprint</span>
-                </div>
-
-                <div class="badge-card">
-                    <img src="https://academy.hackthebox.com/storage/badges/ghost-in-the-shell.png" alt="Network Enumeration badge">
-                    <span>Shells & Payloads</span>
-                </div>
-
-                <div class="badge-card">
-                    <img src="https://academy.hackthebox.com/storage/badges/scan-and-execute.png" alt="Network Enumeration badge">
-                    <span>Attacking Common Services</span>
-                </div>
-
-                <div class="badge-card">
-                    <img src="https://academy.hackthebox.com/storage/badges/enumerate-and-attack.png" alt="Network Enumeration badge">
-                    <span>Active Directory Enumeration & Attacks</span>
-                </div>
-
-                <div class="badge-card">
-                    <img src="https://academy.hackthebox.com/storage/badges/information-is-not-knowledge-or-is-it.png" alt="Network Enumeration badge">
-                    <span>Information Gathering - Web</span>
-                </div>
-
-                <div class="badge-card">
-                    <img src="https://academy.hackthebox.com/storage/badges/grab-the-keys-and-move-laterally.png" alt="Network Enumeration badge">
-                    <span>Password Attacks</span>
-                </div>
-
-                <div class="badge-card">
-                    <img src="https://academy.hackthebox.com/storage/badges/explore-deep-space.png" alt="Network Enumeration badge">
-                    <span>Pivoting, Tunneling and Port Forwarding</span>
-                </div>
-
-            	<div class="badge-card">
-                    <img src="https://academy.hackthebox.com/storage/badges/drop-your-weapon.png" alt="SQLi Fundamental badge">
-                    <span>SQL Injection Fundamentals</span>
-                </div>
-
-            	<div class="badge-card">
-                    <img src="https://academy.hackthebox.com/storage/badges/every-road-leads-back-to-root.png" alt="File Inclusion badge">
-                    <span>File Inclusion</span>
-                </div>
-
-            	<div class="badge-card">
-                    <img src="https://academy.hackthebox.com/storage/badges/7f81e8837d0540d610c5019478c7647a/logo.png" alt="Unwavering User badge">
-                    <span>Unwavering User</span>
-                </div>
-
-                <div class="badge-card">
-                    <img src="https://academy.hackthebox.com/storage/badges/8644292aaa052ff2971d3541256ee605/logo.png" alt="Constant Champion">
-                    <span>Constant Champion</span>
-                </div>
-
-                <div class="badge-card">
-                    <img src="https://academy.hackthebox.com/storage/badges/f0cb51ce20a27147baa2a52a9dbc176e/logo.png" alt="Loyal Leader badge">
-                    <span>Loyal Leader</span>
-                </div>
-
-                <div class="badge-card">
-                    <img src="https://academy.hackthebox.com/storage/badges/60fc416b5eec425a6451aeb1e50d14e4/logo.png" alt="Cyber Rookie 365 badge">
-                    <span>Cyber Rookie 365</span>
-                </div>
-                
-                <div class="badge-card">
-                    <img src="https://academy.hackthebox.com/storage/badges/join-the-adventure.png" alt="SQLMap Essentials badge">
-                    <span>SQLMap Essentials</span>
-                </div>
-                
-                <div class="badge-card">
-                    <img src="https://academy.hackthebox.com/storage/badges/included-in-every-report.png" alt="Cross-Site Scripting badge">
-                    <span>Cross-Site Scripting</span>
-                </div>
-                
-                <div class="badge-card">
-                    <img src="https://academy.hackthebox.com/storage/badges/inject-with-caution.png" alt="Command Injection badge">
-                    <span>Command Injection</span>
-                </div>
-                
-                <div class="badge-card">
-                    <img src="https://academy.hackthebox.com/storage/badges/arachnoid.png" alt="Web Attacks">
-                    <span>Web Attacks</span>
-                </div>
-
-                <div class="badge-card">
-                    <img src="https://academy.hackthebox.com/storage/badges/all-systems-activated.png" alt="Attacking Enterprise Networks badge">
-                    <span>Attacking Enterprise Networks</span>
-                </div>
-
-                <div class="badge-card">
-                    <img src="https://academy.hackthebox.com/storage/badges/time-consuming-but-important.png" alt="Documentation & Reporting badge">
-                    <span>Documentation & Reporting</span>
-                </div>
-
-                <div class="badge-card">
-                    <img src="https://academy.hackthebox.com/storage/badges/attack-from-the-outside.png" alt="Attacking Common Applications badge">
-                    <span>Attacking Common Applications</span>
-                </div>
-
-                <div class="badge-card">
-                    <img src="https://academy.hackthebox.com/storage/badges/reach-new-permission-heights.png" alt="Windows Privilege Escalation badge">
-                    <span>Windows Privilege Escalation</span>
-                </div>
-
-                <div class="badge-card">
-                    <img src="https://academy.hackthebox.com/storage/badges/stairway-to-heaven.png" alt="Linux Privilege Escalation badge">
-                    <span>Linux Privilege Escalation</span>
-                </div>
-            </div>
-        </section>
-
-         <footer class="foot" style="display:flex; justify-content: center;">
-            <p>&copy; 2025 coaglio.All rights reserved.</p>
+        <footer class="foot">
+            <p>&copy; <span id="copyright-year">2025</span> coaglio. <span data-i18n="copyright">All rights reserved.</span></p>
         </footer>
     </main>
 
+    <script src="i18n.js"></script>
     <script>
         // ===== NAPOLEÃO - muda a % aqui =====
-        const CERT_PROGRESS = 76.6;
+        const CERT_PROGRESS = 100;
         // ====================================
 
         function applyCertProgress(pct) {
@@ -303,18 +151,15 @@
             const format = (v) => (v < 10 ? "0" + v : v);
 
             const display =
-                `${years}y ` +
-                `${months}m ` +
-                `${days}d ` +
-                `${format(hours)}h ` +
-                `${format(minutes)}m ` +
-                `${format(seconds)}s`;
+                `${years}y ${months}m ${days}d ${format(hours)}h ${format(minutes)}m ${format(seconds)}s`;
 
             document.getElementById("pentest-live").textContent = display;
         }
 
         updatePentestTimer();
         setInterval(updatePentestTimer, 1000);
+
+        document.getElementById("copyright-year").textContent = new Date().getFullYear();
     </script>
 
 </body>

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>writeups — coaglio</title>
+    <link rel="icon" type="image/x-icon" href="../skull.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../styles.css">
+</head>
+
+<body>
+    <div class="grain"></div>
+
+    <main class="frame">
+        <nav class="site-nav">
+            <a href="../" class="nav-logo">coaglio</a>
+            <div class="nav-right">
+                <div class="nav-links">
+                    <a href="../" data-i18n="nav-home">home</a>
+                    <a href="./" class="active" data-i18n="nav-writeups">writeups</a>
+                    <a href="../htb/" data-i18n="nav-htb">htb</a>
+                </div>
+                <div class="lang-switcher">
+                    <button class="lang-btn active" data-lang="en" onclick="setLang('en')">EN</button>
+                    <button class="lang-btn" data-lang="pt" onclick="setLang('pt')">PT</button>
+                    <button class="lang-btn" data-lang="es" onclick="setLang('es')">ES</button>
+                </div>
+            </div>
+        </nav>
+
+        <header class="page-header">
+            <h1 class="page-title" data-i18n="nav-writeups">writeups</h1>
+            <p class="page-desc" data-i18n="writeups-desc">findings, thoughts & things i learned along the way.</p>
+        </header>
+
+        <div class="writeups-list">
+            <a href="xss-web3-custody.html" class="writeup-link card">
+                <div class="writeup-link-content">
+                    <span class="writeup-link-title" data-i18n="writeup-xss-title">Stored XSS to Full Account Takeover on a Web3 Custody Platform</span>
+                    <span class="writeup-link-excerpt" data-i18n="writeup-xss-excerpt">How a filename injection on a document viewer led to full wallet compromise via React fiber traversal.</span>
+                </div>
+                <div class="writeup-link-meta">
+                    <span class="writeup-link-date">Apr 2026</span>
+                    <div class="writeup-link-tags">
+                        <span class="tag">xss</span>
+                        <span class="tag">web3</span>
+                        <span class="tag">pentest</span>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <footer class="foot">
+            <p>&copy; <span id="copyright-year">2025</span> coaglio. <span data-i18n="copyright">All rights reserved.</span></p>
+        </footer>
+    </main>
+
+    <script src="../i18n.js"></script>
+    <script>
+        document.getElementById("copyright-year").textContent = new Date().getFullYear();
+    </script>
+
+</body>
+
+</html>

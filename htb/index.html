@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>htb — coaglio</title>
+    <link rel="icon" type="image/x-icon" href="../skull.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../styles.css">
+</head>
+
+<body>
+    <div class="grain"></div>
+
+    <main class="frame">
+        <nav class="site-nav">
+            <a href="../" class="nav-logo">coaglio</a>
+            <div class="nav-right">
+                <div class="nav-links">
+                    <a href="../" data-i18n="nav-home">home</a>
+                    <a href="../writeups/" data-i18n="nav-writeups">writeups</a>
+                    <a href="./" class="active" data-i18n="nav-htb">htb</a>
+                </div>
+                <div class="lang-switcher">
+                    <button class="lang-btn active" data-lang="en" onclick="setLang('en')">EN</button>
+                    <button class="lang-btn" data-lang="pt" onclick="setLang('pt')">PT</button>
+                    <button class="lang-btn" data-lang="es" onclick="setLang('es')">ES</button>
+                </div>
+            </div>
+        </nav>
+
+        <header class="page-header">
+            <h1 class="page-title">hack the box</h1>
+            <p class="page-desc" data-i18n="htb-desc">badges & paths completed on HTB Academy.</p>
+        </header>
+
+        <section class="card" id="htb-badges">
+            <h2 data-i18n="htb-badges">htb badges</h2>
+
+            <div class="badges-container">
+                <div class="badge-card">
+                    <img src="https://academy.hackthebox.com/storage/badges/academician.png" alt="Introduction to Academy badge">
+                    <span>Introduction to Academy</span>
+                </div>
+
+                <div class="badge-card">
+                    <img src="https://academy.hackthebox.com/storage/badges/the-eye-that-sees-all.png" alt="Network Enumeration with Nmap badge">
+                    <span>Network Enumeration with Nmap</span>
+                </div>
+
+                <div class="badge-card">
+                    <img src="https://academy.hackthebox.com/storage/badges/airborne-delivery.png" alt="File Transfers badge">
+                    <span>File Transfers</span>
+                </div>
+
+                <div class="badge-card">
+                    <img src="https://academy.hackthebox.com/storage/badges/combine-the-modules.png" alt="Using Metasploit badge">
+                    <span>Using Metasploit</span>
+                </div>
+
+                <div class="badge-card">
+                    <img src="https://academy.hackthebox.com/storage/badges/fuzzing-is-power.png" alt="Fuzzing with Ffuf badge">
+                    <span>Fuzzing with Ffuf</span>
+                </div>
+
+                <div class="badge-card">
+                    <img src="https://academy.hackthebox.com/storage/badges/crude-but-effective.png" alt="Login Brute Forcing badge">
+                    <span>Login Brute Forcing</span>
+                </div>
+
+                <div class="badge-card">
+                    <img src="https://academy.hackthebox.com/storage/badges/your-first-battle.png" alt="Getting Started badge">
+                    <span>Getting Started</span>
+                </div>
+
+                <div class="badge-card">
+                    <img src="https://academy.hackthebox.com/storage/badges/tactical.png" alt="Penetration Testing Process badge">
+                    <span>Penetration Testing Process</span>
+                </div>
+
+                <div class="badge-card">
+                    <img src="https://academy.hackthebox.com/storage/badges/light-in-the-dark.png" alt="Vulnerability Assessment badge">
+                    <span>Vulnerability Assessment</span>
+                </div>
+
+                <div class="badge-card">
+                    <img src="https://academy.hackthebox.com/storage/badges/dive-into-requests.png" alt="Using Web Proxies badge">
+                    <span>Using Web Proxies</span>
+                </div>
+
+                <div class="badge-card">
+                    <img src="https://academy.hackthebox.com/storage/badges/you-need-to-trace-before-you-can-hung.png" alt="Footprint badge">
+                    <span>Footprint</span>
+                </div>
+
+                <div class="badge-card">
+                    <img src="https://academy.hackthebox.com/storage/badges/ghost-in-the-shell.png" alt="Shells & Payloads badge">
+                    <span>Shells & Payloads</span>
+                </div>
+
+                <div class="badge-card">
+                    <img src="https://academy.hackthebox.com/storage/badges/scan-and-execute.png" alt="Attacking Common Services badge">
+                    <span>Attacking Common Services</span>
+                </div>
+
+                <div class="badge-card">
+                    <img src="https://academy.hackthebox.com/storage/badges/enumerate-and-attack.png" alt="Active Directory Enumeration & Attacks badge">
+                    <span>Active Directory Enumeration & Attacks</span>
+                </div>
+
+                <div class="badge-card">
+                    <img src="https://academy.hackthebox.com/storage/badges/information-is-not-knowledge-or-is-it.png" alt="Information Gathering - Web badge">
+                    <span>Information Gathering - Web</span>
+                </div>
+
+                <div class="badge-card">
+                    <img src="https://academy.hackthebox.com/storage/badges/grab-the-keys-and-move-laterally.png" alt="Password Attacks badge">
+                    <span>Password Attacks</span>
+                </div>
+
+                <div class="badge-card">
+                    <img src="https://academy.hackthebox.com/storage/badges/explore-deep-space.png" alt="Pivoting, Tunneling and Port Forwarding badge">
+                    <span>Pivoting, Tunneling and Port Forwarding</span>
+                </div>
+
+                <div class="badge-card">
+                    <img src="https://academy.hackthebox.com/storage/badges/drop-your-weapon.png" alt="SQL Injection Fundamentals badge">
+                    <span>SQL Injection Fundamentals</span>
+                </div>
+
+                <div class="badge-card">
+                    <img src="https://academy.hackthebox.com/storage/badges/every-road-leads-back-to-root.png" alt="File Inclusion badge">
+                    <span>File Inclusion</span>
+                </div>
+
+                <div class="badge-card">
+                    <img src="https://academy.hackthebox.com/storage/badges/7f81e8837d0540d610c5019478c7647a/logo.png" alt="Unwavering User badge">
+                    <span>Unwavering User</span>
+                </div>
+
+                <div class="badge-card">
+                    <img src="https://academy.hackthebox.com/storage/badges/8644292aaa052ff2971d3541256ee605/logo.png" alt="Constant Champion badge">
+                    <span>Constant Champion</span>
+                </div>
+
+                <div class="badge-card">
+                    <img src="https://academy.hackthebox.com/storage/badges/f0cb51ce20a27147baa2a52a9dbc176e/logo.png" alt="Loyal Leader badge">
+                    <span>Loyal Leader</span>
+                </div>
+
+                <div class="badge-card">
+                    <img src="https://academy.hackthebox.com/storage/badges/60fc416b5eec425a6451aeb1e50d14e4/logo.png" alt="Cyber Rookie 365 badge">
+                    <span>Cyber Rookie 365</span>
+                </div>
+
+                <div class="badge-card">
+                    <img src="https://academy.hackthebox.com/storage/badges/join-the-adventure.png" alt="SQLMap Essentials badge">
+                    <span>SQLMap Essentials</span>
+                </div>
+
+                <div class="badge-card">
+                    <img src="https://academy.hackthebox.com/storage/badges/included-in-every-report.png" alt="Cross-Site Scripting badge">
+                    <span>Cross-Site Scripting</span>
+                </div>
+
+                <div class="badge-card">
+                    <img src="https://academy.hackthebox.com/storage/badges/inject-with-caution.png" alt="Command Injection badge">
+                    <span>Command Injection</span>
+                </div>
+
+                <div class="badge-card">
+                    <img src="https://academy.hackthebox.com/storage/badges/arachnoid.png" alt="Web Attacks badge">
+                    <span>Web Attacks</span>
+                </div>
+
+                <div class="badge-card">
+                    <img src="https://academy.hackthebox.com/storage/badges/all-systems-activated.png" alt="Attacking Enterprise Networks badge">
+                    <span>Attacking Enterprise Networks</span>
+                </div>
+
+                <div class="badge-card">
+                    <img src="https://academy.hackthebox.com/storage/badges/time-consuming-but-important.png" alt="Documentation & Reporting badge">
+                    <span>Documentation & Reporting</span>
+                </div>
+
+                <div class="badge-card">
+                    <img src="https://academy.hackthebox.com/storage/badges/attack-from-the-outside.png" alt="Attacking Common Applications badge">
+                    <span>Attacking Common Applications</span>
+                </div>
+
+                <div class="badge-card">
+                    <img src="https://academy.hackthebox.com/storage/badges/reach-new-permission-heights.png" alt="Windows Privilege Escalation badge">
+                    <span>Windows Privilege Escalation</span>
+                </div>
+
+                <div class="badge-card">
+                    <img src="https://academy.hackthebox.com/storage/badges/stairway-to-heaven.png" alt="Linux Privilege Escalation badge">
+                    <span>Linux Privilege Escalation</span>
+                </div>
+            </div>
+        </section>
+
+        <footer class="foot">
+            <p>&copy; <span id="copyright-year">2025</span> coaglio. <span data-i18n="copyright">All rights reserved.</span></p>
+        </footer>
+    </main>
+
+    <script src="../i18n.js"></script>
+    <script>
+        document.getElementById("copyright-year").textContent = new Date().getFullYear();
+    </script>
+
+</body>
+
+</html>
