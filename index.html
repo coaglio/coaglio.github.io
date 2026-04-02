@@ -266,10 +266,18 @@
     </main>
 
     <script>
-        const certProgress = 48;
+        // ===== NAPOLEÃO - muda a % aqui =====
+        const CERT_PROGRESS = 76.6;
+        // ====================================
 
-        document.documentElement.style.setProperty("--cert-progress", certProgress + "%");
-        document.getElementById("cert-progress-text").textContent = certProgress + "%";
+        function applyCertProgress(pct) {
+            const clean = Math.max(0, Math.min(100, Number(pct) || 0));
+            document.documentElement.style.setProperty("--cert-progress", clean + "%");
+            const textEl = document.getElementById("cert-progress-text");
+            if (textEl) textEl.textContent = clean + "%";
+        }
+
+        applyCertProgress(CERT_PROGRESS);
 
         function updatePentestTimer() {
             const start = new Date(2025, 3, 28);
@@ -282,31 +290,15 @@
             let minutes = now.getMinutes() - start.getMinutes();
             let seconds = now.getSeconds() - start.getSeconds();
 
-            if (seconds < 0) {
-                seconds += 60;
-                minutes--;
-            }
-
-            if (minutes < 0) {
-                minutes += 60;
-                hours--;
-            }
-
-            if (hours < 0) {
-                hours += 24;
-                days--;
-            }
-
+            if (seconds < 0) { seconds += 60; minutes--; }
+            if (minutes < 0) { minutes += 60; hours--; }
+            if (hours < 0) { hours += 24; days--; }
             if (days < 0) {
                 const prevMonth = new Date(now.getFullYear(), now.getMonth(), 0);
                 days += prevMonth.getDate();
                 months--;
             }
-
-            if (months < 0) {
-                months += 12;
-                years--;
-            }
+            if (months < 0) { months += 12; years--; }
 
             const format = (v) => (v < 10 ? "0" + v : v);
 
@@ -323,19 +315,6 @@
 
         updatePentestTimer();
         setInterval(updatePentestTimer, 1000);
-    </script>
-
-    <script>
-        const DEFAULT_CERT_PROGRESS = 76.6 <!-- napoleão -->
-        
-        function applyCertProgress(pct) {
-            const clean = Math.max(0, Math.min(100, Number(pct) || 0));
-            document.documentElement.style.setProperty("--cert-progress", clean + "%");
-            const textEl = document.getElementById("cert-progress-text");
-            if (textEl) textEl.textContent = clean + "%";
-        }
-
-        applyCertProgress(DEFAULT_CERT_PROGRESS);
     </script>
 
 </body>
