@@ -22,7 +22,7 @@ const translations = {
         "what-i-poke-text": "web apps :^)",
         "htb-badges": "htb badges",
         writeups: "writeups",
-        "writeup-xss-title": "Stored XSS to Full Account Takeover on a Web3 Custody Platform",
+        "writeup-xss-title": "Stored XSS to Full Account Takeover on a Web3 Platform",
         copyright: "All rights reserved."
     },
     pt: {
@@ -48,7 +48,7 @@ const translations = {
         "what-i-poke-text": "aplicações web :^)",
         "htb-badges": "htb badges",
         writeups: "writeups",
-        "writeup-xss-title": "Stored XSS até Account Takeover Completo em Plataforma Web3 de Custódia",
+        "writeup-xss-title": "Stored XSS até Account Takeover Completo em Plataforma Web3",
         copyright: "Todos os direitos reservados."
     },
     es: {
@@ -74,7 +74,7 @@ const translations = {
         "what-i-poke-text": "aplicaciones web :^)",
         "htb-badges": "htb badges",
         writeups: "writeups",
-        "writeup-xss-title": "Stored XSS hasta Account Takeover Completo en Plataforma Web3 de Custodia",
+        "writeup-xss-title": "Stored XSS hasta Account Takeover Completo en Plataforma Web3",
         copyright: "Todos los derechos reservados."
     }
 };
