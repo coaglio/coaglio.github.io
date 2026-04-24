@@ -23,7 +23,8 @@ const translations = {
         "htb-badges": "htb badges",
         writeups: "writeups",
         "writeup-xss-title": "Stored XSS to Full Account Takeover on a Web3 Platform",
-        copyright: "All rights reserved."
+        copyright: "All rights reserved.",
+        "view-cert": "view certificate"
     },
     pt: {
         "nav-home": "início",
@@ -49,7 +50,8 @@ const translations = {
         "htb-badges": "htb badges",
         writeups: "writeups",
         "writeup-xss-title": "Stored XSS até Account Takeover Completo em Plataforma Web3",
-        copyright: "Todos os direitos reservados."
+        copyright: "Todos os direitos reservados.",
+        "view-cert": "ver certificado"
     },
     es: {
         "nav-home": "inicio",
@@ -75,7 +77,8 @@ const translations = {
         "htb-badges": "htb badges",
         writeups: "writeups",
         "writeup-xss-title": "Stored XSS hasta Account Takeover Completo en Plataforma Web3",
-        copyright: "Todos los derechos reservados."
+        copyright: "Todos los derechos reservados.",
+        "view-cert": "ver certificado"
     }
 };
 
