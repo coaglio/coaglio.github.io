@@ -251,6 +251,16 @@ body {
   image-rendering: pixelated;
 }
 
+model-viewer.skull {
+  background-color: transparent;
+  --poster-color: transparent;
+  cursor: grab;
+}
+
+model-viewer.skull:active {
+  cursor: grabbing;
+}
+
 @media (max-width: 540px) {
   .logo {
     font-size: 1.4rem;

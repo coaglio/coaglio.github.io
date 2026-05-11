@@ -10,6 +10,7 @@
         href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Press+Start+2P&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
+    <script type="module" src="./vendor/model-viewer.min.js"></script>
 </head>
 
 <body>
@@ -40,7 +41,20 @@
             </div>
 
             <div class="skull-wrap">
-                <img src="skull.gif" alt="skull animation" class="skull">
+                <model-viewer
+                    src="models/skull.glb"
+                    alt="3D skull"
+                    class="skull"
+                    camera-controls
+                    auto-rotate
+                    auto-rotate-delay="0"
+                    rotation-per-second="20deg"
+                    disable-zoom
+                    interaction-prompt="none"
+                    shadow-intensity="0"
+                    exposure="1"
+                    environment-image="neutral">
+                </model-viewer>
             </div>
         </header>
 
