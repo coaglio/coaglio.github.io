@@ -252,6 +252,15 @@ body {
 }
 
 model-viewer.skull {
+  --display-size: 120px;
+  --pixel-scale: 2;
+  width: calc(var(--display-size) / var(--pixel-scale));
+  height: calc(var(--display-size) / var(--pixel-scale));
+  margin: calc(var(--display-size) * (var(--pixel-scale) - 1) / (var(--pixel-scale) * 2));
+  transform: scale(var(--pixel-scale));
+  transform-origin: center;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
   background-color: transparent;
   --poster-color: transparent;
   cursor: grab;
@@ -259,6 +268,18 @@ model-viewer.skull {
 
 model-viewer.skull:active {
   cursor: grabbing;
+}
+
+@media (max-width: 540px) {
+  model-viewer.skull { --display-size: 96px; }
+}
+
+@media (max-width: 420px) {
+  model-viewer.skull { --display-size: 80px; }
+}
+
+@media (max-width: 340px) {
+  model-viewer.skull { --display-size: 70px; }
 }
 
 @media (max-width: 540px) {
