@@ -23,7 +23,6 @@
                 <div class="nav-links">
                     <a href="./" class="active" data-i18n="nav-home">home</a>
                     <a href="./writeups/" data-i18n="nav-writeups">writeups</a>
-                    <a href="./htb/" data-i18n="nav-htb">htb</a>
                 </div>
                 <div class="lang-switcher">
                     <button class="lang-btn active" data-lang="en" onclick="setLang('en')">EN</button>
@@ -45,12 +44,6 @@
                     src="models/skull.glb"
                     alt="3D skull"
                     class="skull"
-                    camera-controls
-                    auto-rotate
-                    auto-rotate-delay="0"
-                    rotation-per-second="20deg"
-                    disable-zoom
-                    interaction-prompt="none"
                     shadow-intensity="0"
                     exposure="1"
                     environment-image="neutral">
@@ -63,21 +56,40 @@
                 <section class="card" id="certs">
                     <h2 data-i18n="certs">certs</h2>
 
-                    <div class="cert-item">
+                    <div class="cert-item" data-progress="100" data-year="2026" style="--cert-img: url('cpts.png')">
                         <a class="cert-logo" href="certs/cpts-certificate.pdf" target="_blank" rel="noreferrer" aria-label="Open CPTS certificate">
                             <span class="cert-logo-badge" aria-hidden="true">↗</span>
                             <span class="cert-logo-overlay" data-i18n="view-cert">view certificate</span>
                         </a>
 
                         <div class="cert-meta">
-                            <span class="cert-name">CPTS</span>
+                            <div class="cert-head">
+                                <span class="cert-name">CPTS</span>
+                                <span class="cert-status"></span>
+                            </div>
                             <div class="cert-progress-row">
                                 <div class="cert-progress-bar">
                                     <div class="cert-progress-fill"></div>
                                 </div>
-                                <span class="cert-progress-text" id="cert-progress-text">0%</span>
+                                <span class="cert-progress-text">0%</span>
                             </div>
-                            <span class="cert-status" data-i18n="certified">certified</span>
+                        </div>
+                    </div>
+
+                    <div class="cert-item" data-progress="0" style="--cert-img: url('oscp.png')">
+                        <div class="cert-logo" aria-hidden="true"></div>
+
+                        <div class="cert-meta">
+                            <div class="cert-head">
+                                <span class="cert-name">OSCP+</span>
+                                <span class="cert-status"></span>
+                            </div>
+                            <div class="cert-progress-row">
+                                <div class="cert-progress-bar">
+                                    <div class="cert-progress-fill"></div>
+                                </div>
+                                <span class="cert-progress-text">0%</span>
+                            </div>
                         </div>
                     </div>
                 </section>
@@ -111,7 +123,7 @@
                     <article class="card">
                         <h3 data-i18n="track-record">track record</h3>
                         <p>
-                            <span data-i18n="track-record-text">college (didn't learn much), 1 year as cyber/threat intern.</span><br>
+                            <span data-i18n="track-record-text">college (didn't learn much), cybersecurity intern: deep &amp; dark web research, data leak, OSINT and pentest.</span><br>
                             <span data-i18n="pentest-label">time being a pentester: </span><span id="pentest-live"></span>
                         </p>
                     </article>
@@ -131,18 +143,29 @@
 
     <script src="i18n.js"></script>
     <script>
-        // ===== NAPOLEÃO - muda a % aqui =====
-        const CERT_PROGRESS = 100;
-        // ====================================
+        // ===== NAPOLEÃO - muda a % no data-progress de cada .cert-item =====
 
-        function applyCertProgress(pct) {
-            const clean = Math.max(0, Math.min(100, Number(pct) || 0));
-            document.documentElement.style.setProperty("--cert-progress", clean + "%");
-            const textEl = document.getElementById("cert-progress-text");
-            if (textEl) textEl.textContent = clean + "%";
+        function applyCertProgress(item) {
+            const clean = Math.max(0, Math.min(100, Number(item.dataset.progress) || 0));
+            item.style.setProperty("--cert-progress", clean + "%");
+            item.querySelector(".cert-progress-text").textContent = clean + "%";
+
+            const status = item.querySelector(".cert-status");
+            const done = clean >= 100;
+            status.dataset.i18n = done ? "certified" : "in-progress";
+            status.textContent = done ? "certified" : "in progress";
+            status.classList.toggle("is-progress", !done);
+            item.classList.toggle("is-done", done);
+
+            if (done && item.dataset.year) {
+                const year = document.createElement("span");
+                year.className = "cert-year";
+                year.textContent = item.dataset.year;
+                status.after(year);
+            }
         }
 
-        applyCertProgress(CERT_PROGRESS);
+        document.querySelectorAll(".cert-item").forEach(applyCertProgress);
 
         function updatePentestTimer() {
             const start = new Date(2025, 3, 28);
